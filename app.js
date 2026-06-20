@@ -42,7 +42,7 @@ import BookingAdmin from './routes/bookingAdmin.js';
 import BookingSuperAdmin from './routes/bookingSuperAdmin.js';
 import './jobs/bookingAutoCancel.job.js';
 import payment from './routes/paymentUser.js';
-import paymentAdmin from './routes/PaymentAdmin.js';
+import paymentAdmin from './routes/paymentAdmin.js';
 import paymentSuperAdmin from './routes/paymentSuperAdmin.js';
 
 const app = express();
