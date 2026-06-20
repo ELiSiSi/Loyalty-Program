@@ -9,7 +9,7 @@ import {
   getPoint,
   updatePoint,
   deletePoint,
-} from '../controller/PointSuperAdmin.js';
+} from '../controller/pointSuperAdmin.js';
 
 router.use(protect);
 
