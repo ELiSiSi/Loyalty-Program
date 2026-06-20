@@ -25,7 +25,10 @@ export const updateMe = async (req, res, next) => {
     runValidators: true,
   });
 
-  res.status(200).json({ status: 'success', data: { user } });
+  res.status(200).json({
+    status: 'success',
+    data: { user },
+  });
 };
 export const updatePassword = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.user.id).select('+password');
