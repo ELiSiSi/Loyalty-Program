@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;700&family=Inter:wght@400;500&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0A0A0F;
+  --surface:#111118;
+  --surface2:#18181F;
+  --border:#ffffff0d;
+  --border2:#ffffff18;
+  --text:#E8E8F0;
+  --muted:#6B6B80;
+  --accent:#6C5CE7;
+  --accent2:#00D9FF;
+  --gold:#F9C846;
+  --green:#00C48C;
+  --red:#FF5252;
+  --orange:#FF8C42;
+}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+  line-height:1.6;
+  min-height:100vh;
+}
+.page{max-width:1100px;margin:0 auto;padding:32px 24px}
+
+.hero{
+  text-align:center;
+  padding:56px 40px 48px;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:20px;
+  margin-bottom:32px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';
+  position:absolute;
+  top:-80px;left:50%;transform:translateX(-50%);
+  width:400px;height:200px;
+  background:radial-gradient(ellipse,rgba(108,92,231,0.18) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(108,92,231,0.12);
+  border:1px solid rgba(108,92,231,0.3);
+  color:#A89BE8;
+  padding:5px 14px;border-radius:20px;
+  font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;
+  margin-bottom:18px;
+}
+.hero h1{
+  font-family:'Syne',sans-serif;
+  font-size:2.4em;font-weight:700;
+  color:#fff;
+  letter-spacing:-0.02em;
+  margin-bottom:10px;
+}
+.hero h1 span{color:var(--accent)}
+.hero p{color:var(--muted);font-size:13px;max-width:540px;margin:0 auto 24px}
+
+.stats{
+  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+}
+.stat{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px 20px;
+  text-align:center;
+  min-width:90px;
+}
+.stat .n{font-family:'Syne',sans-serif;font-size:1.6em;font-weight:700;color:var(--accent)}
+.stat .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px}
+
+.auth-banner{
+  background:rgba(249,200,70,0.06);
+  border:1px solid rgba(249,200,70,0.18);
+  border-radius:10px;padding:12px 18px;
+  color:#D4A830;
+  font-size:12px;
+  margin-bottom:28px;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.auth-banner i{font-size:16px;margin-top:1px;flex-shrink:0}
+
+.section{margin-bottom:28px}
+.section-header{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:16px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.section-icon{
+  width:30px;height:30px;
+  background:rgba(108,92,231,0.12);
+  border:1px solid rgba(108,92,231,0.2);
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;
+}
+.section-title{
+  font-family:'Syne',sans-serif;
+  font-size:1em;font-weight:700;
+  color:#fff;letter-spacing:0.02em;text-transform:uppercase;
+}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px;
+  margin-bottom:14px;
+  border-left:3px solid var(--accent);
+  transition:border-color 0.2s;
+}
+.card:hover{border-left-color:var(--accent2)}
+.card-header{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:8px;
+  margin-bottom:8px;
+}
+.card-name{font-family:'Syne',sans-serif;font-size:0.95em;font-weight:700;color:#fff}
+.card-desc{color:var(--muted);font-size:12px;margin-bottom:14px}
+
+.role-badge{
+  display:inline-block;
+  padding:3px 10px;border-radius:20px;
+  font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;
+}
+.role-public{background:rgba(107,107,128,0.15);color:#9898B0;border:1px solid rgba(107,107,128,0.2)}
+.role-user{background:rgba(0,196,140,0.1);color:#00C48C;border:1px solid rgba(0,196,140,0.2)}
+.role-admin{background:rgba(0,217,255,0.1);color:#00D9FF;border:1px solid rgba(0,217,255,0.2)}
+.role-superadmin{background:rgba(249,200,70,0.1);color:#F9C846;border:1px solid rgba(249,200,70,0.2)}
+
+table{width:100%;border-collapse:collapse}
+th{
+  background:rgba(108,92,231,0.08);
+  color:var(--accent);
+  padding:8px 12px;
+  text-align:left;
+  font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;
+}
+th:first-child{border-radius:6px 0 0 6px}
+th:last-child{border-radius:0 6px 6px 0}
+td{
+  padding:9px 12px;
+  border-bottom:1px solid var(--border);
+  color:#A0A0B8;
+  font-size:12px;
+}
+tr:last-child td{border-bottom:0}
+tr:hover td{background:rgba(255,255,255,0.015);color:var(--text)}
+
+.method{
+  display:inline-block;
+  padding:2px 8px;border-radius:4px;
+  font-family:'DM Mono',monospace;
+  font-size:10px;font-weight:500;
+  letter-spacing:0.04em;
+}
+.GET{background:rgba(0,196,140,0.1);color:#00C48C}
+.POST{background:rgba(55,138,221,0.1);color:#5BA8F5}
+.PATCH{background:rgba(255,140,66,0.1);color:#FF8C42}
+.DELETE{background:rgba(255,82,82,0.1);color:#FF5252}
+
+.code-block{
+  background:#0D0D14;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px;
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  line-height:1.7;
+  color:#8888AA;
+  overflow-x:auto;
+  margin-top:14px;
+}
+.code-block .comment{color:#3A3A55}
+.code-block .url{color:#00C48C}
+.code-block .key{color:#CC99FF}
+.code-block .val{color:#FFD580}
+.code-block .num{color:#79B8FF}
+.code-block .header-label{
+  font-size:10px;color:var(--accent);font-weight:500;
+  display:block;margin-bottom:6px;letter-spacing:0.05em;text-transform:uppercase;
+}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+
+.quick-ref{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;padding:20px;
+}
+.quick-ref h3{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:0.9em;
+  color:#fff;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.06em;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hero">
+  <div class="hero-badge">⭐ Customer Loyalty Program</div>
+  <h1>API <span>Reference</span> Docs</h1>
+  <p>Complete technical reference for all endpoints — bookings, offers, rewards, points, coupons & more.</p>
+  <div class="stats">
+    <div class="stat"><div class="n">100+</div><div class="l">Endpoints</div></div>
+    <div class="stat"><div class="n">8</div><div class="l">Modules</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">Access Levels</div></div>
+    <div class="stat"><div class="n">v1</div><div class="l">API Version</div></div>
+  </div>
+</div>
+
+<div class="auth-banner">
+  <i class="ti ti-alert-triangle"></i>
+  <div><strong style="color:#F9C846">Auth required:</strong> Most routes need a valid access token. Send it as <code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px">Authorization: Bearer &lt;token&gt;</code> in the request header. Obtain a token via <code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:3px">POST /api/v1/auth/login</code></div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">🔐</div>
+    <div class="section-title">Authentication</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">Auth Routes</div>
+      <span class="role-badge role-public">Public</span>
+    </div>
+    <div class="card-desc">Core authentication: signup, login, token refresh, password reset</div>
+    <table>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Access</th></tr>
+      <tr><td><span class="method POST">POST</span></td><td>/api/v1/auth/signup</td><td>Create account</td><td>Public</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td>/api/v1/auth/login</td><td>Sign in</td><td>Public</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td>/api/v1/auth/refresh</td><td>Refresh access token</td><td>Public</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td>/api/v1/auth/logout</td><td>Sign out</td><td>Authenticated</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td>/api/v1/auth/forgotPassword</td><td>Request password reset</td><td>Public</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/auth/resetPassword/:token</td><td>Set new password</td><td>Public</td></tr>
+    </table>
+    <div class="code-block">
+<span class="header-label">Example — Login</span><span class="comment">// POST http://localhost:3000/api/v1/auth/login</span>
+<span class="comment">// Body:</span>
+{ <span class="key">"email"</span>: <span class="val">"admin@example.com"</span>, <span class="key">"password"</span>: <span class="val">"password123"</span> }
+
+<span class="comment">// Response:</span>
+{ <span class="key">"status"</span>: <span class="val">"success"</span>, <span class="key">"token"</span>: <span class="val">"eyJhbGci..."</span> }</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">👤</div>
+    <div class="section-title">Users</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">User — My Profile</div>
+      <span class="role-badge role-user">User</span>
+    </div>
+    <div class="card-desc">Manage own account — profile, password, photo upload</div>
+    <table>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+      <tr><td><span class="method GET">GET</span></td><td>/api/v1/user/me</td><td>Get my profile</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/user/me</td><td>Update my profile (+ photo)</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/user/me</td><td>Delete my account</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/user/me/update-password</td><td>Change password</td></tr>
+    </table>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Admin — Manage Users</div>
+        <span class="role-badge role-admin">Admin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/admin/users</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/admin/users/:id</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/admin/users/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/admin/users/:id</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Super Admin — Users</div>
+        <span class="role-badge role-superadmin">SuperAdmin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/super-admin</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/users</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/users/:id</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/super-admin/users/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/super-admin/users/:id</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">🏢</div>
+    <div class="section-title">Companies</div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Admin — My Company</div>
+        <span class="role-badge role-admin">Admin</span>
+      </div>
+      <div class="card-desc">View and update own company profile including logo upload</div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/company/me</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/company/me</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Super Admin — All Companies</div>
+        <span class="role-badge role-superadmin">SuperAdmin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/company/super-admin</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/company/super-admin/:id</td></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/company/super-admin</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/company/super-admin/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/company/super-admin/:id</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">📂</div>
+    <div class="section-title">Categories</div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Admin — Categories</div>
+        <span class="role-badge role-admin">Admin / SuperAdmin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Access</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/category/admin</td><td>Authenticated</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/category/admin/:id</td><td>Authenticated</td></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/category/admin</td><td>Admin+</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/category/admin/:id</td><td>Admin+</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/category/admin/:id</td><td>Admin+</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Super Admin — Categories</div>
+        <span class="role-badge role-superadmin">SuperAdmin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/category/super-admin</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/category/super-admin/:id</td></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/category/super-admin</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/category/super-admin/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/category/super-admin/:id</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">🛍️</div>
+    <div class="section-title">Products</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">Public — Browse Products</div>
+      <span class="role-badge role-public">Public</span>
+    </div>
+    <div class="card-desc">Product listing available without authentication — supports filtering, sorting, pagination</div>
+    <table>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+      <tr><td><span class="method GET">GET</span></td><td>/api/v1/product</td><td>List all products</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td>/api/v1/product/:id</td><td>Get product details</td></tr>
+    </table>
+    <div class="code-block">
+<span class="header-label">Query Params</span><span class="url">GET /api/v1/product?category=hotel&sort=price&page=1&limit=10</span></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Admin — Products</div>
+        <span class="role-badge role-admin">Admin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/admin/product</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/admin/product/:id</td></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/admin/product</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/admin/product/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/admin/product/:id</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Super Admin — Products</div>
+        <span class="role-badge role-superadmin">SuperAdmin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/product</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/product/:id</td></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/super-admin/product</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/super-admin/product/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/super-admin/product/:id</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">🎁</div>
+    <div class="section-title">Offers</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">User — Browse Offers</div>
+      <span class="role-badge role-user">User</span>
+    </div>
+    <table>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+      <tr><td><span class="method GET">GET</span></td><td>/api/v1/offer</td><td>List available offers</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td>/api/v1/offer/:id</td><td>Get offer details</td></tr>
+    </table>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Admin — Offers</div>
+        <span class="role-badge role-admin">Admin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/admin/offer</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/admin/offer/:id</td></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/admin/offer</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/admin/offer/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/admin/offer/:id</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Super Admin — Offers</div>
+        <span class="role-badge role-superadmin">SuperAdmin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/offer</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/offer/:id</td></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/super-admin/offer</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/super-admin/offer/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/super-admin/offer/:id</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">📅</div>
+    <div class="section-title">Bookings</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">User — My Bookings</div>
+      <span class="role-badge role-user">User</span>
+    </div>
+    <div class="card-desc">Create, view, and manage own reservations</div>
+    <table>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Access</th></tr>
+      <tr><td><span class="method POST">POST</span></td><td>/api/v1/booking</td><td>Create booking</td><td>User</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td>/api/v1/booking</td><td>List all bookings</td><td>Admin+</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td>/api/v1/booking/:id</td><td>Get booking details</td><td>User</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/booking/:id</td><td>Update my booking</td><td>User</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/booking/:id/cancel</td><td>Cancel my booking</td><td>User</td></tr>
+    </table>
+    <div class="code-block">
+<span class="header-label">Create Booking — Request Body</span>{
+  <span class="key">"product"</span>: <span class="val">"6688abc..."</span>,
+  <span class="key">"checkInDate"</span>: <span class="val">"2026-07-15"</span>,
+  <span class="key">"checkOutDate"</span>: <span class="val">"2026-07-20"</span>,
+  <span class="key">"guests"</span>: <span class="num">2</span>,
+  <span class="key">"specialRequests"</span>: <span class="val">"Sea view room"</span>
+}</div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Admin — Bookings</div>
+        <span class="role-badge role-admin">Admin / SuperAdmin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/admin/booking</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/admin/booking/:id</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/admin/booking/:id</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/admin/booking/:id/cancel</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Super Admin — Bookings</div>
+        <span class="role-badge role-superadmin">SuperAdmin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/booking</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/booking/:id</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/super-admin/booking/:id</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/super-admin/booking/:id/cancel</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">💳</div>
+    <div class="section-title">Payments</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">User — My Payments</div>
+      <span class="role-badge role-user">User</span>
+    </div>
+    <table>
+      <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+      <tr><td><span class="method GET">GET</span></td><td>/api/v1/payment</td><td>List my payments</td></tr>
+      <tr><td><span class="method GET">GET</span></td><td>/api/v1/payment/:id</td><td>Get payment details</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td>/api/v1/payment/:id</td><td>Pay for a booking</td></tr>
+    </table>
+    <div class="code-block">
+<span class="header-label">Create Payment — Request Body</span>{ <span class="key">"paymentMethod"</span>: <span class="val">"credit_card"</span>, <span class="key">"amount"</span>: <span class="num">1500</span>, <span class="key">"currency"</span>: <span class="val">"SAR"</span> }</div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Admin — Payments</div>
+        <span class="role-badge role-admin">Admin / SuperAdmin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/admin/payment</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/admin/payment/:id</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Super Admin — Payments</div>
+        <span class="role-badge role-superadmin">SuperAdmin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/payment</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/payment/:id</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">🏷️</div>
+    <div class="section-title">Loyalty — Coupons</div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Admin — Coupons</div>
+        <span class="role-badge role-admin">Admin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/coupon</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/coupon/:id</td></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/coupon</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/coupon/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/coupon/:id</td></tr>
+      </table>
+      <div class="code-block">
+<span class="header-label">Create Coupon</span>{ <span class="key">"code"</span>: <span class="val">"SUMMER2026"</span>, <span class="key">"discountType"</span>: <span class="val">"percentage"</span>, <span class="key">"discountValue"</span>: <span class="num">25</span>, <span class="key">"maxUses"</span>: <span class="num">100</span>, <span class="key">"expiryDate"</span>: <span class="val">"2026-09-01"</span> }</div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Super Admin — Coupons</div>
+        <span class="role-badge role-superadmin">SuperAdmin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/coupon</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/coupon/:id</td></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/super-admin/coupon</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/super-admin/coupon/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/super-admin/coupon/:id</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">🎀</div>
+    <div class="section-title">Loyalty — Gifts & Rewards</div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Admin — Gifts</div>
+        <span class="role-badge role-admin">Admin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/admin/gift</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/admin/gift/:id</td></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/admin/gift</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/admin/gift/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/admin/gift/:id</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Super Admin — Gifts</div>
+        <span class="role-badge role-superadmin">SuperAdmin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/gift</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/gift/:id</td></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/super-admin/gift</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/super-admin/gift/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/super-admin/gift/:id</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">⭐</div>
+    <div class="section-title">Loyalty — Points</div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Admin — Points</div>
+        <span class="role-badge role-admin">Admin</span>
+      </div>
+      <div class="card-desc">Issue, adjust, and manage customer reward points</div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/point</td></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/point</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/point/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/point/:id</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-name">Super Admin — Points</div>
+        <span class="role-badge role-superadmin">SuperAdmin</span>
+      </div>
+      <table>
+        <tr><th>Method</th><th>Endpoint</th></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/point</td></tr>
+        <tr><td><span class="method GET">GET</span></td><td>/api/v1/super-admin/point/:id</td></tr>
+        <tr><td><span class="method POST">POST</span></td><td>/api/v1/super-admin/point</td></tr>
+        <tr><td><span class="method PATCH">PATCH</span></td><td>/api/v1/super-admin/point/:id</td></tr>
+        <tr><td><span class="method DELETE">DELETE</span></td><td>/api/v1/super-admin/point/:id</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <div class="section-icon">📖</div>
+    <div class="section-title">Quick Reference</div>
+  </div>
+  <div class="grid2">
+    <div class="quick-ref">
+      <h3>Base URL & Auth</h3>
+      <div class="code-block" style="margin-top:0">
+<span class="comment">// Base URL</span>
+<span class="url">http://localhost:3000/api/v1</span>
+
+<span class="comment">// Auth Header (all protected routes)</span>
+Authorization: Bearer &lt;access_token&gt;
+
+<span class="comment">// Refresh expired token</span>
+<span class="url">POST /api/v1/auth/refresh</span>
+{ <span class="key">"refreshToken"</span>: <span class="val">"..."</span> }</div>
+    </div>
+    <div class="quick-ref">
+      <h3>Access Levels</h3>
+      <table>
+        <tr><th>Role</th><th>Scope</th></tr>
+        <tr><td><span class="role-badge role-public">Public</span></td><td>Product listing only</td></tr>
+        <tr><td><span class="role-badge role-user">User</span></td><td>Bookings, payments, offers</td></tr>
+        <tr><td><span class="role-badge role-admin">Admin</span></td><td>Products, coupons, gifts, points</td></tr>
+        <tr><td><span class="role-badge role-superadmin">SuperAdmin</span></td><td>Everything + companies & users</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="quick-ref" style="margin-top:14px">
+    <h3>HTTP Methods</h3>
+    <table>
+      <tr><th>Method</th><th>Purpose</th></tr>
+      <tr><td><span class="method GET">GET</span></td><td>Retrieve / list resources</td></tr>
+      <tr><td><span class="method POST">POST</span></td><td>Create a new resource</td></tr>
+      <tr><td><span class="method PATCH">PATCH</span></td><td>Partially update a resource</td></tr>
+      <tr><td><span class="method DELETE">DELETE</span></td><td>Remove a resource</td></tr>
+    </table>
+  </div>
+</div>
+
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+</body>
+</html>
