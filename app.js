@@ -59,18 +59,18 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 app.use(cookieParser());
 
-app.use(
-  hpp({
-    whitelist: ['status', 'roles', 'sort'],
-  })
-);
+// app.use(
+//   hpp({
+//     whitelist: ['status', 'roles', 'sort'],
+//   })
+// );
 
 app.use(compression());
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use('/uploads', express.static(join(__dirname, 'uploads')));
 
-app.set('trust proxy', 1); 
+app.set('trust proxy', 1);
 const globalLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 100,
