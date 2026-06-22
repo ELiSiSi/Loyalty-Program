@@ -51,7 +51,12 @@ const userSchema = new mongoose.Schema(
 
     passwordConfirm: {
       type: String,
-      required: [true, 'Please confirm your password'],
+      required: [
+        function () {
+          return this.isNew || this.isModified('password');
+        },
+        'Please confirm your password',
+      ],
       validate: {
         validator: function (el) {
           return el === this.password;
@@ -123,7 +128,6 @@ userSchema.methods.createPasswordResetToken = function () {
   return resetToken;
 };
 
-// ── Store hashed refresh token ──
 userSchema.methods.setRefreshToken = function (token) {
   this.refreshToken = crypto.createHash('sha256').update(token).digest('hex');
   this.refreshTokenExpires = Date.now() + 30 * 24 * 60 * 60 * 1000; // 30 days

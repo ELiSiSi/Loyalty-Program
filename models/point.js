@@ -43,10 +43,7 @@ const pointSchema = new mongoose.Schema(
       ref: 'Company',
       required: [true, 'Please tell us your company'],
     },
-    pointSign: {
-      type: Number,
-      required: [true, 'Please tell us your point sign'],
-    },
+
   },
   {
     timestamps: true,

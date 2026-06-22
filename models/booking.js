@@ -22,7 +22,6 @@ const bookingSchema = new mongoose.Schema(
 
     bookingType: {
       type: String,
-      enum: ['flight', 'hotel', 'product'],
       required: true,
     },
 
@@ -82,12 +81,10 @@ const bookingSchema = new mongoose.Schema(
   }
 );
 
-bookingSchema.pre(/^find/, function (next) {
+bookingSchema.pre(/^find/, function () {
   this.populate('user', 'name email')
     .populate('coupon', 'code discount')
     .populate('product', 'name price image');
-
-  next();
 });
 
 const Booking =

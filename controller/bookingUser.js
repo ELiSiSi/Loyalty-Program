@@ -68,14 +68,14 @@ export const createBooking = catchAsync(async (req, res, next) => {
   pointSystem.allPoints += earnedPoints;
   pointSystem.pendingPoints += earnedPoints;
 
-  await user.save();
-  await pointSystem.save();
+  await user.save({ validateBeforeSave: false });
+  await pointSystem.save({ validateBeforeSave: false });
 
   const booking = await Booking.create({
     user: user._id,
     company: product.company._id,
-    bookingType: product.category.name,
-    bookingProduct: product._id,
+    bookingType: product.category?.name || 'product',
+    product: product._id,
     quantity,
     totalPrice,
     coupon: couponId,
@@ -96,7 +96,7 @@ export const createBooking = catchAsync(async (req, res, next) => {
 });
 
 export const getMyAllBookings = catchAsync(async (req, res) => {
-  const bookings = await Booking.find(req.user._id);
+  const bookings = await Booking.find({ user: req.user._id });
 
   res.status(200).json({
     status: 'success',
@@ -108,7 +108,7 @@ export const getMyAllBookings = catchAsync(async (req, res) => {
 });
 
 export const getMyBooking = catchAsync(async (req, res, next) => {
-  const booking = await Booking.findById({
+  const booking = await Booking.findOne({
     _id: req.params.id,
     user: req.user._id,
   });
@@ -147,21 +147,17 @@ export const cancelBooking = catchAsync(async (req, res, next) => {
   }
 
   user.pendingPoints -= booking.earnedPoints;
-
   user.availablePoints += booking.usedPoints;
 
   pointSystem.pendingPoints -= booking.earnedPoints;
-
   pointSystem.usedPoints -= booking.usedPoints;
-
   pointSystem.allPoints += booking.usedPoints;
 
-  await user.save();
-  await pointSystem.save();
+  await user.save({ validateBeforeSave: false });
+  await pointSystem.save({ validateBeforeSave: false });
 
   booking.bookingStatus = 'cancelled';
-
-  await booking.save();
+  await booking.save({ validateBeforeSave: false });
 
   res.status(200).json({
     status: 'success',
@@ -191,7 +187,7 @@ export const updateMyBooking = catchAsync(async (req, res, next) => {
     return next(new AppError('Cannot update cancelled booking', 400));
   }
 
-  const product = await Product.findById(booking.bookingProduct);
+  const product = await Product.findById(booking.product);
 
   const user = await User.findById(req.user._id);
 
@@ -204,36 +200,29 @@ export const updateMyBooking = catchAsync(async (req, res, next) => {
   }
 
   user.pendingPoints -= booking.earnedPoints;
-
   user.availablePoints += booking.usedPoints;
 
   pointSystem.pendingPoints -= booking.earnedPoints;
-
   pointSystem.usedPoints -= booking.usedPoints;
-
   pointSystem.allPoints += booking.usedPoints;
 
-  await user.save();
-  await pointSystem.save();
+  await user.save({ validateBeforeSave: false });
+  await pointSystem.save({ validateBeforeSave: false });
 
   const qty = quantity || booking.quantity || 1;
-
   const totalPrice = product.price * qty;
 
   let discountAmount = 0;
   let couponId = null;
 
   if (couponCode) {
-    const coupon = await Coupon.findOne({
-      code: couponCode,
-    });
+    const coupon = await Coupon.findOne({ code: couponCode });
 
     if (!coupon) {
       return next(new AppError('Coupon not found', 404));
     }
 
     const now = new Date();
-
     if (now < coupon.startsAt || now > coupon.expiresAt) {
       return next(new AppError('Coupon expired', 400));
     }
@@ -249,21 +238,17 @@ export const updateMyBooking = catchAsync(async (req, res, next) => {
   }
 
   const finalPrice = totalPrice - discountAmount - pointsToUse;
-
   const earnedPoints = Math.floor(finalPrice / 100);
 
   user.availablePoints -= pointsToUse;
-
   user.pendingPoints += earnedPoints;
 
   pointSystem.usedPoints += pointsToUse;
-
   pointSystem.allPoints -= pointsToUse;
-
   pointSystem.pendingPoints += earnedPoints;
 
-  await user.save();
-  await pointSystem.save();
+  await user.save({ validateBeforeSave: false });
+  await pointSystem.save({ validateBeforeSave: false });
 
   booking.quantity = qty;
   booking.totalPrice = totalPrice;
@@ -273,7 +258,7 @@ export const updateMyBooking = catchAsync(async (req, res, next) => {
   booking.finalPrice = finalPrice;
   booking.coupon = couponId;
 
-  await booking.save();
+  await booking.save({ validateBeforeSave: false });
 
   const updated = await Booking.findById(booking._id);
 

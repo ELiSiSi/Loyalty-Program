@@ -16,7 +16,7 @@ router.use(protect);
 
 router.post('/', createBooking);
 
-router.get('/', restrictTo('admin', 'superAdmin'), getMyAllBookings);
+router.get('/',getMyAllBookings);
 
 router.get('/:id', getMyBooking);
 
