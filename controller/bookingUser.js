@@ -11,7 +11,9 @@ export const createBooking = catchAsync(async (req, res, next) => {
 
   const product = await Product.findById(productId)
     .populate('company')
-    .populate('category');
+    .populate('category')
+    .populate('gifts');
+
 
   if (!product) {
     return next(new AppError('Product not found', 404));

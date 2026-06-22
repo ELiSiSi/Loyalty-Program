@@ -13,7 +13,11 @@ const bookingSchema = new mongoose.Schema(
       ref: 'Product',
       required: true,
     },
-
+    gift: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Gift',
+      default: null,
+    },
     company: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Company',
@@ -84,6 +88,7 @@ const bookingSchema = new mongoose.Schema(
 bookingSchema.pre(/^find/, function () {
   this.populate('user', 'name email')
     .populate('coupon', 'code discount')
+    .populate('gift', 'name image description')
     .populate('product', 'name price image');
 });
 

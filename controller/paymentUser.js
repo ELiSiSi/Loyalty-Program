@@ -9,7 +9,7 @@ export const createPayment = catchAsync(async (req, res, next) => {
 
   const booking = await Booking.findOne({
     _id: bookingId,
-    userId: req.user._id,
+    user: req.user._id,
   });
 
   if (!booking) {
@@ -34,10 +34,10 @@ export const createPayment = catchAsync(async (req, res, next) => {
     const user = await User.findById(req.user._id);
     user.pendingPoints -= 200;
     user.availablePoints += 200;
-    await user.save();
+   await user.save({ validateBeforeSave: false });
   }
   booking.bookingStatus = 'paid';
-  await booking.save();
+  await booking.save({ validateBeforeSave: false });
 
   res.status(201).json({
     status: 'success',
