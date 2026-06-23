@@ -1,0 +1,91 @@
+[
+  {
+    "flight_name": "Cairo to Dubai Flight",
+    "ticket_price": 8500,
+    "departure_city": "Cairo",
+    "arrival_city": "Dubai",
+    "flight_description": "Direct flight from Cairo to Dubai",
+    "flight_image": "cairo-dubai.jpg",
+    "reward_points": 850
+  },
+  {
+    "flight_name": "Cairo to Riyadh Flight",
+    "ticket_price": 7000,
+    "departure_city": "Cairo",
+    "arrival_city": "Riyadh",
+    "flight_description": "Direct flight from Cairo to Riyadh",
+    "flight_image": "cairo-riyadh.jpg",
+    "reward_points": 700
+  },
+  {
+    "flight_name": "Cairo to Jeddah Flight",
+    "ticket_price": 6500,
+    "departure_city": "Cairo",
+    "arrival_city": "Jeddah",
+    "flight_description": "Direct flight from Cairo to Jeddah",
+    "flight_image": "cairo-jeddah.jpg",
+    "reward_points": 650
+  },
+  {
+    "flight_name": "Cairo to Kuwait Flight",
+    "ticket_price": 6000,
+    "departure_city": "Cairo",
+    "arrival_city": "Kuwait",
+    "flight_description": "Direct flight from Cairo to Kuwait",
+    "flight_image": "cairo-kuwait.jpg",
+    "reward_points": 600
+  },
+  {
+    "flight_name": "Cairo to Doha Flight",
+    "ticket_price": 6200,
+    "departure_city": "Cairo",
+    "arrival_city": "Doha",
+    "flight_description": "Direct flight from Cairo to Doha",
+    "flight_image": "cairo-doha.jpg",
+    "reward_points": 620
+  },
+  {
+    "flight_name": "Cairo to Abu Dhabi Flight",
+    "ticket_price": 6800,
+    "departure_city": "Cairo",
+    "arrival_city": "Abu Dhabi",
+    "flight_description": "Direct flight from Cairo to Abu Dhabi",
+    "flight_image": "cairo-abudhabi.jpg",
+    "reward_points": 680
+  },
+  {
+    "flight_name": "Cairo to Istanbul Flight",
+    "ticket_price": 9500,
+    "departure_city": "Cairo",
+    "arrival_city": "Istanbul",
+    "flight_description": "Direct flight from Cairo to Istanbul",
+    "flight_image": "cairo-istanbul.jpg",
+    "reward_points": 950
+  },
+  {
+    "flight_name": "Cairo to London Flight",
+    "ticket_price": 15000,
+    "departure_city": "Cairo",
+    "arrival_city": "London",
+    "flight_description": "Direct flight from Cairo to London",
+    "flight_image": "cairo-london.jpg",
+    "reward_points": 1500
+  },
+  {
+    "flight_name": "Cairo to Paris Flight",
+    "ticket_price": 14500,
+    "departure_city": "Cairo",
+    "arrival_city": "Paris",
+    "flight_description": "Direct flight from Cairo to Paris",
+    "flight_image": "cairo-paris.jpg",
+    "reward_points": 1450
+  },
+  {
+    "flight_name": "Cairo to New York Flight",
+    "ticket_price": 25000,
+    "departure_city": "Cairo",
+    "arrival_city": "New York",
+    "flight_description": "Direct flight from Cairo to New York",
+    "flight_image": "cairo-newyork.jpg"
+  }
+]

@@ -43,8 +43,11 @@ export const getProduct = catchAsync(async (req, res, next) => {
 
 export const createProduct = catchAsync(async (req, res, next) => {
   const { price, category, addPoints } = req.body;
-
   const company = req.user.company;
+
+  if (!company) {
+    return next(new AppError('You are not assigned to any company', 400));
+  }
 
   if (req.file) {
     req.body.image = req.file.path.replace(/\\/g, '/');
@@ -52,8 +55,8 @@ export const createProduct = catchAsync(async (req, res, next) => {
     return next(new AppError('Please upload a product image', 400));
   }
 
-  const companyId = await Company.findById(company);
-  if (!companyId) {
+  const companyExists = await Company.findById(company);
+  if (!companyExists) {
     return next(new AppError('Company not found', 404));
   }
 
@@ -62,15 +65,17 @@ export const createProduct = catchAsync(async (req, res, next) => {
     return next(new AppError('Category not found', 404));
   }
 
-  const pointConfig = await getPointConfig(companyId);
+  const pointConfig = await getPointConfig(company);
   const basePoints = calculateBasePoints(price, pointConfig);
+
+  const finalAddPoints = Array.isArray(addPoints) ? addPoints : [];
 
   const newProduct = await Product.create({
     ...req.body,
     company: company,
     category: category,
     points: basePoints,
-    addPoints: addPoints || [],
+    addPoints: finalAddPoints,
   });
 
   res.status(201).json({

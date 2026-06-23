@@ -11,7 +11,8 @@ import {
 } from '../services/pointsService.js';
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
-  const products = await Product.find().populate('company category');
+  // 🟢 تم إزالة .populate() لأن الموديل يحتوي على pre-find middleware يقوم بذلك تلقائياً
+  const products = await Product.find();
 
   res.status(200).json({
     status: 'success',
@@ -21,9 +22,7 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
 });
 
 export const getProduct = catchAsync(async (req, res, next) => {
-  const product = await Product.findById(req.params.id).populate(
-    'company category'
-  );
+  const product = await Product.findById(req.params.id);
 
   if (!product) {
     return next(new AppError('No product found with that ID', 404));
@@ -41,9 +40,10 @@ export const getProduct = catchAsync(async (req, res, next) => {
 export const createProduct = catchAsync(async (req, res, next) => {
   const { price, category, addPoints, companyId } = req.body;
 
-  if (!companyId) {
+  if (!companyId || companyId === 'undefined') {
     return next(new AppError('Company is required', 400));
   }
+  const cleanCompanyId = String(companyId).trim();
 
   if (req.file) {
     req.body.image = req.file.path.replace(/\\/g, '/');
@@ -51,7 +51,7 @@ export const createProduct = catchAsync(async (req, res, next) => {
     return next(new AppError('Please upload a product image', 400));
   }
 
-  const company = await Company.findById(companyId);
+  const company = await Company.findById(cleanCompanyId);
   if (!company) {
     return next(new AppError('Company not found', 404));
   }
@@ -61,15 +61,17 @@ export const createProduct = catchAsync(async (req, res, next) => {
     return next(new AppError('Category not found', 404));
   }
 
-  const pointConfig = await getPointConfig(companyId);
+  const pointConfig = await getPointConfig(cleanCompanyId);
   const basePoints = calculateBasePoints(price, pointConfig);
+
+  const finalAddPoints = Array.isArray(addPoints) ? addPoints : [];
 
   const newProduct = await Product.create({
     ...req.body,
-    company: companyId,
+    company: cleanCompanyId,
     category,
     points: basePoints,
-    addPoints: addPoints || [],
+    addPoints: finalAddPoints,
   });
 
   res.status(201).json({

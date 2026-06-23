@@ -77,3 +77,13 @@ export const deleteCategory = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
+
+
+
+export const deleteAllCategories = catchAsync(async (req, res) => {
+  await Category.deleteMany({});
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+}); 

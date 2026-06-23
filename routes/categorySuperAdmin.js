@@ -10,6 +10,7 @@ import {
   getAllCategories,
   getCategory,
   updateCategory,
+  deleteAllCategories,
 } from '../controller/categorySuperAdmin.js';
 
 router.use(protect);
@@ -21,6 +22,8 @@ router.get('/:id', getCategory);
 
 router.post('/', uploadImage, createCategory);
 router.patch('/:id', uploadImage, updateCategory);
+router.delete('/deleteall', deleteAllCategories);
 router.delete('/:id', deleteCategory);
+
 
 export default router;

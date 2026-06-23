@@ -9,6 +9,7 @@ import {
   getAllBookingsAdmin,
   getBookingAdmin,
   updateBookingAdmin,
+  
 } from '../controller/bookingSuperAdmin.js';
 
 router.use(protect);

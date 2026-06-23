@@ -6,14 +6,17 @@ import catchAsync from '../utils/catchAsync.js';
 export const createPoint = catchAsync(async (req, res, next) => {
   const { name, currency, pointValue, pointsPercentage, companyId } = req.body;
 
-  const company = await Company.findById(companyId);
+  if (!companyId) {
+    return next(new AppError('Company ID is required', 400));
+  }
+  const cleanCompanyId = String(companyId).trim();
 
+  const company = await Company.findById(cleanCompanyId);
   if (!company) {
     return next(new AppError('Company not found', 404));
   }
 
-  // 🔥 prevent duplicate point system per company
-  const exists = await Point.findOne({ company: companyId });
+  const exists = await Point.findOne({ companyId: cleanCompanyId });
 
   if (exists) {
     return next(
@@ -26,7 +29,7 @@ export const createPoint = catchAsync(async (req, res, next) => {
     currency,
     pointValue,
     pointsPercentage,
-    company: companyId,
+    companyId: cleanCompanyId,
   });
 
   res.status(201).json({
@@ -34,8 +37,9 @@ export const createPoint = catchAsync(async (req, res, next) => {
     data: { point },
   });
 });
+
 export const getAllPoints = catchAsync(async (req, res) => {
-  const points = await Point.find().populate('company');
+  const points = await Point.find().populate('companyId');
 
   res.status(200).json({
     status: 'success',
@@ -45,7 +49,7 @@ export const getAllPoints = catchAsync(async (req, res) => {
 });
 
 export const getPoint = catchAsync(async (req, res, next) => {
-  const point = await Point.findById(req.params.id).populate('company');
+  const point = await Point.findById(req.params.id).populate('companyId');
 
   if (!point) {
     return next(new AppError('No point found with that ID', 404));

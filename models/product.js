@@ -48,24 +48,30 @@ const productSchema = new mongoose.Schema(
     gifts: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Gift',
-
+    },
+    fromLocation: {
+      type: String,
+      required: true,
+    },
+    toLocation: {
+      type: String,
+      required: true,
     },
     addPoints: [
       {
         points: {
           type: Number,
-          required: true,
+          default: 0,
         },
         startsAt: {
           type: Date,
-          required: true,
         },
         endAt: {
           type: Date,
-          required: true,
         },
       },
     ],
+    default: [],
   },
   {
     timestamps: true,

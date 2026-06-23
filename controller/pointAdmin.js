@@ -6,14 +6,17 @@ import catchAsync from '../utils/catchAsync.js';
 export const createPoint = catchAsync(async (req, res, next) => {
   const { name, currency, pointValue, pointsPercentage } = req.body;
 
-  const company = await Company.findById(req.user.company);
+  if (!req.user || !req.user.company) {
+    return next(new AppError('You are not assigned to any company', 400));
+  }
 
+  const company = await Company.findById(req.user.company);
   if (!company) {
     return next(new AppError('Company not found', 404));
   }
 
   const existingPoint = await Point.findOne({
-    company: req.user.company,
+    companyId: req.user.company,
   });
 
   if (existingPoint) {
@@ -27,7 +30,7 @@ export const createPoint = catchAsync(async (req, res, next) => {
     currency,
     pointValue,
     pointsPercentage,
-    company: req.user.company,
+    companyId: req.user.company,
   });
 
   res.status(201).json({
@@ -38,8 +41,8 @@ export const createPoint = catchAsync(async (req, res, next) => {
 
 export const getMyPoints = catchAsync(async (req, res) => {
   const points = await Point.find({
-    company: req.user.company,
-  });
+    companyId: req.user.company,
+  }).populate('companyId');
 
   res.status(200).json({
     status: 'success',
@@ -52,7 +55,7 @@ export const updatePoint = catchAsync(async (req, res, next) => {
   const point = await Point.findOneAndUpdate(
     {
       _id: req.params.id,
-      company: req.user.company,
+      companyId: req.user.company,
     },
     req.body,
     {
@@ -62,7 +65,12 @@ export const updatePoint = catchAsync(async (req, res, next) => {
   );
 
   if (!point) {
-    return next(new AppError('No point found with that ID', 404));
+    return next(
+      new AppError(
+        'No point found with that ID or you do not have permission',
+        404
+      )
+    );
   }
 
   res.status(200).json({
@@ -74,11 +82,16 @@ export const updatePoint = catchAsync(async (req, res, next) => {
 export const deletePoint = catchAsync(async (req, res, next) => {
   const point = await Point.findOneAndDelete({
     _id: req.params.id,
-    company: req.user.company,
+    companyId: req.user.company,
   });
 
   if (!point) {
-    return next(new AppError('No point found with that ID', 404));
+    return next(
+      new AppError(
+        'No point found with that ID or you do not have permission',
+        404
+      )
+    );
   }
 
   res.status(204).json({

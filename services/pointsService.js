@@ -1,7 +1,9 @@
 import Point from '../models/point.js';
+import AppError from '../utils/appError.js';
+import mongoose from 'mongoose';
 
 export const calculateBasePoints = (price, pointConfig) => {
-  return Math.floor((price * pointConfig.pointsPercentage) / 100);
+  return Math.floor((price * (pointConfig.pointsPercentage || 0)) / 100);
 };
 
 export const calculateProductPoints = (product) => {
@@ -12,17 +14,26 @@ export const calculateProductPoints = (product) => {
     .reduce((sum, p) => sum + p.points, 0);
 
   return {
-    basePoints: product.points,
+    basePoints: product.points || 0,
     bonusPoints,
-    totalPoints: product.points + bonusPoints,
+    totalPoints: (product.points || 0) + bonusPoints,
   };
 };
 
 export const getPointConfig = async (companyId) => {
-  const pointConfig = await Point.findOne({ companyId });
+  if (!companyId) {
+    throw new AppError(
+      'Company ID is required to fetch point configuration',
+      400
+    );
+  }
+
+  const objectIdCompany = new mongoose.Types.ObjectId(String(companyId).trim());
+
+  const pointConfig = await Point.findOne({ companyId: objectIdCompany });
 
   if (!pointConfig) {
-    throw new Error('Point configuration not found for this company');
+    throw new AppError('Point configuration not found for this company', 404);
   }
 
   return pointConfig;
