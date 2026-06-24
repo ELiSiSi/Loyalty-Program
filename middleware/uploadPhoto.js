@@ -102,7 +102,6 @@ export const uploadSingleFile = (req, res, next) => {
       return next(new AppError('File too large. Maximum size is 20MB.', 422));
     }
     if (err) {
-      console.error('🔥 Cloudinary Error:', err); // <--- ضيف السطر ده هنا
       return next(new AppError(err.message || 'Upload failed.', 422));
     }
     return next();
@@ -116,7 +115,6 @@ export const uploadLogo = (req, res, next) => {
       return next(new AppError('File too large. Maximum size is 20MB.', 422));
     }
     if (err) {
-      console.error('🔥 Cloudinary Error:', err); // <--- وضيف السطر ده هنا
       return next(new AppError(err.message || 'Upload failed.', 422));
     }
     next();
@@ -130,7 +128,6 @@ export const uploadImage = (req, res, next) => {
       return next(new AppError('File too large. Maximum size is 20MB.', 422));
     }
     if (err) {
-      console.error('🔥 Cloudinary Error:', err); // <--- وضيف السطر ده هنا
       return next(new AppError(err.message || 'Upload failed.', 422));
     }
     next();

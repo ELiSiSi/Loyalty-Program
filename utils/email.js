@@ -6,16 +6,15 @@ export class Email {
     this.to = user.email;
     this.name = user.name.split(' ')[0];
     this.url = url;
-    this.from = `<${process.env.EMAIL_FROM}>`;
+    this.from = `<${process.env.MY_EMAIL_USERNAME}>`;
   }
 
   newTransport() {
-    // شيلنا شرط الـ production مؤقتاً للتجربة
     return nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.MY_EMAIL_USERNAME,
-        pass: process.env.MY_EMAIL_PASSWORD, // الباسورد المكون من 16 حرف المكتوب في الـ .env
+        pass: process.env.MY_EMAIL_PASSWORD,
       },
     });
   }

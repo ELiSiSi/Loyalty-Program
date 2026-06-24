@@ -24,12 +24,11 @@ export const getAllCompanies = catchAsync(async (req, res) => {
     data: { companies },
   });
 });
-
 export const createCompany = catchAsync(async (req, res) => {
   const companyData = { ...req.body };
 
   if (req.file) {
-    companyData.logo = req.file.path.replace(/\\/g, '/');
+    companyData.logo = req.file.path;
   }
 
   const newCompany = await Company.create(companyData);

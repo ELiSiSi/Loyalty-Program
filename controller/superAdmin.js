@@ -22,10 +22,7 @@ export const createAdminInvite = catchAsync(async (req, res, next) => {
   await newAdmin.save({ validateBeforeSave: false });
 
   const setupURL = `${req.protocol}://${req.get('host')}/admin/setup-account/${setupToken}`;
-console.log('--- TEST EMAIL CONFIG ---');
-console.log('EMAIL USERNAME:', process.env.MY_EMAIL_USERNAME);
-console.log('EMAIL PASSWORD:', process.env.MY_EMAIL_PASSWORD);
-console.log('-------------------------');
+
   try {
     await new Email(newAdmin, setupURL).sendAdminInvite();
 
