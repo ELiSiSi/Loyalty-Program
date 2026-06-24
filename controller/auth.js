@@ -2,7 +2,6 @@ import crypto from 'crypto';
 import asyncHandler from 'express-async-handler';
 import JWT from 'jsonwebtoken';
 
-
 import User from '../models/user.js';
 import AppError from '../utils/appError.js';
 
@@ -74,7 +73,6 @@ const issueTokens = async (user, res) => {
   return { accessToken, refreshToken };
 };
 
-
 export const signup = asyncHandler(async (req, res) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -97,7 +95,6 @@ export const signup = asyncHandler(async (req, res) => {
     },
   });
 });
-
 
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
@@ -126,7 +123,6 @@ export const login = asyncHandler(async (req, res, next) => {
     },
   });
 });
-
 
 export const refreshAccessToken = asyncHandler(async (req, res, next) => {
   const rt = req.cookies?.refresh_token || req.body?.refreshToken;
@@ -163,7 +159,6 @@ export const refreshAccessToken = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 export const logout = asyncHandler(async (req, res, next) => {
   if (!req.user) {
     return next(new AppError('Not authenticated', 401));
@@ -179,7 +174,6 @@ export const logout = asyncHandler(async (req, res, next) => {
     message: 'Logged out successfully',
   });
 });
-
 
 export const forgotPassword = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
@@ -208,7 +202,6 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
     return next(new AppError('Email sending failed', 500));
   }
 });
-
 
 export const resetPassword = asyncHandler(async (req, res, next) => {
   const hashedToken = crypto

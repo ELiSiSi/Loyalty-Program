@@ -4,28 +4,18 @@ import { htmlToText } from 'html-to-text';
 export class Email {
   constructor(user, url) {
     this.to = user.email;
-    this.name  = user.name.split(' ')[0];
+    this.name = user.name.split(' ')[0];
     this.url = url;
     this.from = `<${process.env.EMAIL_FROM}>`;
   }
 
   newTransport() {
-    if (process.env.NODE_ENV === 'production') {
-      return nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.MY_EMAIL_USERNAME,
-          pass: process.env.MY_EMAIL_PASSWORD,
-        },
-      });
-    }
-
+    // شيلنا شرط الـ production مؤقتاً للتجربة
     return nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
+      service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD,
+        user: process.env.MY_EMAIL_USERNAME,
+        pass: process.env.MY_EMAIL_PASSWORD, // الباسورد المكون من 16 حرف المكتوب في الـ .env
       },
     });
   }
@@ -48,7 +38,7 @@ export class Email {
     if (template === 'welcome') {
       return `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>Welcome to the Rehletna Family, ${this.name }!</h2>
+          <h2>Welcome to the Rehletna Family, ${this.name}!</h2>
           <p>We're excited to have you on board.</p>
           <a href="${this.url}" style="display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 4px;">
             Get Started
@@ -73,7 +63,19 @@ export class Email {
       `;
     }
 
-    return `<p>Hello ${this.name }</p>`;
+    if (template === 'welcomeAdmin') {
+      return `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>Welcome to the Rehletna Family, ${this.name}!</h2>
+          <p>We're excited to have you on board.</p>
+          <a href="${this.url}" style="display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 4px;">
+            Get Started
+          </a>
+        </div>
+      `;
+    }
+
+    return `<p>Hello ${this.name}</p>`;
   }
 
   async sendWelcome() {
@@ -84,6 +86,13 @@ export class Email {
     await this.send(
       'passwordReset',
       'Your password reset token (valid for only 10 minutes)'
+    );
+  }
+
+  async sendAdminInvite() {
+    await this.send(
+      'welcomeAdmin',
+      'You have been invited as an Admin to Rehletna!'
     );
   }
 }

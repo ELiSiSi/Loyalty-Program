@@ -29,7 +29,6 @@ import companyAdmin from './routes/companyAdmin.js';
 import companySuperAdmin from './routes/companySuperAdmin.js';
 import pointAdmin from './routes/pointAdmin.js';
 import pointSuperAdmin from './routes/pointSuperAdmin.js';
-
 import productUser from './routes/productUser.js';
 import productAdmin from './routes/productAdmin.js';
 import productSuperAdmin from './routes/productSuperAdmin.js';

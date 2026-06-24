@@ -1,63 +1,35 @@
 import User from '../models/user.js';
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
+import { Email } from '../utils/email.js';
+import crypto from 'crypto';
 
-export const createUser = catchAsync(async (req, res, next) => {
-  const newUser = await User.create(req.body);
-  res.status(201).json({
-    status: 'success',
-    data: {
-      user: newUser,
-    },
+export const completeAdminSetup = catchAsync(async (req, res, next) => {
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const admin = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+    role: 'admin',
   });
-});
 
-export const getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
+  if (!admin) {
+    return next(new AppError('Token invalid or expired', 400));
+  }
+
+  admin.password = req.body.password;
+  admin.passwordConfirm = req.body.passwordConfirm;
+
+  admin.passwordResetToken = undefined;
+  admin.passwordResetExpires = undefined;
+
+  await admin.save();
+
   res.status(200).json({
     status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
-
-export const getUser = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
-  if (!user) {
-    return next(new AppError('No user found with that ID', 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user,
-    },
-  });
-});
-
-export const updateUser = catchAsync(async (req, res, next) => {
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!user) {
-    return next(new AppError('No user found with that ID', 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user,
-    },
-  });
-});
-export const deleteUser = catchAsync(async (req, res, next) => {
-  const user = await User.findByIdAndDelete(req.params.id);
-  if (!user) {
-    return next(new AppError('No user found with that ID', 404));
-  }
-  res.status(204).json({
-    status: 'success',
-    data: null,
+    message: 'Account setup completed',
   });
 });

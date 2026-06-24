@@ -6,7 +6,6 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'Please tell us your name'],
     },
 
     email: {
@@ -18,7 +17,7 @@ const userSchema = new mongoose.Schema(
 
     photo: {
       type: String,
-      default: 'default.jpg',
+      default: 'uploads/general/download.jpg',
     },
 
     role: {
