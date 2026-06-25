@@ -27,9 +27,11 @@ export const getCategory = catchAsync(async (req, res, next) => {
 });
 
 export const createCategory = catchAsync(async (req, res, next) => {
-  const categoryData = { ...req.body };
+  console.log('LOG: Current User from Protect:', req.user);
 
-  categoryData.companyId = req.user.company;
+  const categoryData = { ...req.body };
+  categoryData.companyId = req.user?.company;
+
 
   if (req.file) {
     categoryData.image = req.file.path.replace(/\\/g, '/');
