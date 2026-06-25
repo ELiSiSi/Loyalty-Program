@@ -122,7 +122,6 @@ const options = {
 
 const swaggerSpec = swaggerJsdoc(options);
 
-// 1. عرّف المتغير هنا أولاً داخل app.js
 const swaggerUiOptions = {
   customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
   customJs: [
@@ -131,7 +130,6 @@ const swaggerUiOptions = {
   ]
 };
 
-// 2. السطر بتاعك القديم زي ما هو:
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));
 // ═══════════════════════════════════════════════════════════════════════
 //---------------------------   ROUTES    --------------------------------
