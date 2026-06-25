@@ -1,6 +1,7 @@
 import Category from '../models/category.js';
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
+import User from '../models/user.js';
 
 export const getAllCategories = catchAsync(async (req, res, next) => {
   const companyId = req.user.company;
@@ -27,6 +28,8 @@ export const getCategory = catchAsync(async (req, res, next) => {
 
 export const createCategory = catchAsync(async (req, res, next) => {
   const categoryData = { ...req.body };
+
+  categoryData.company = req.user.company;
 
   if (req.file) {
     categoryData.image = req.file.path.replace(/\\/g, '/');
