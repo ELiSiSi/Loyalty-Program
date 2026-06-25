@@ -53,8 +53,18 @@ import paymentSuperAdmin from './routes/paymentSuperAdmin.js';
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(helmet());
-
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
+        imgSrc: ["'self'", "data:", "https://cdnjs.cloudflare.com"],
+      },
+    },
+  })
+);
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
