@@ -1,5 +1,5 @@
-import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 const options = {
   definition: {
@@ -11,14 +11,14 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000/api/v1',
+        url: 'http://localhost:3000',
+      },
+      {
+        url: 'https://loyalty-program-murex.vercel.app',
       },
     ],
   },
-  apis: [
-    './controllers/*.js',
-    './routes/*.js', 
-  ],
+  apis: ['./controllers/*.js', './routes/*.js'],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
