@@ -80,6 +80,7 @@ app.use(compression());
 const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use('/uploads', express.static(join(__dirname, 'uploads')));
 
+
 app.set('trust proxy', 1);
 const globalLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
