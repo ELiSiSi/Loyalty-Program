@@ -1,22 +1,21 @@
 {
   "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "app.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxDuration": 10
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
+      "source": "/public/(.*)",
+      "destination": "/public/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "/app.js"
+      "source": "/uploads/(.*)",
+      "destination": "/uploads/$1"
+    },
+    {
+      "source": "/api-docs",
+      "destination": "/app.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/app.js"
     }
   ]
 }
