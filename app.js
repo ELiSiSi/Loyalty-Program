@@ -74,6 +74,7 @@ swaggerDocs(app);
 //   })
 // );
 
+
 app.use(compression());
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -121,7 +122,7 @@ app.use('/api/v1/auth', auth);
 app.use('/api/v1/user', user);
 app.use('/api/v1/admin', admin);
 app.use('/api/v1/super-admin', superAdmin);
-app.use('/api/v1/company', companyAdmin);
+app.use('/api/v1/admin/company', companyAdmin);
 app.use('/api/v1/super-admin/company', companySuperAdmin);
 app.use('/api/v1/admin/category', categoryAdmin);
 app.use('/api/v1/super-admin/category', categorySuperAdmin);

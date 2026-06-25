@@ -85,7 +85,7 @@ const fileFilter = (req, file, cb) => {
     return cb(new AppError('Invalid file extension.', 422));
   }
 
-  cb(null, true);
+  cb(null, true); 
 };
 
 const upload = multer({
