@@ -137,6 +137,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOpti
 app.use('/api/v1', globalLimiter);
 
 
+import getdata from './data/routerEGYPTAIR.js';
+
+app.use('/api/v1/getdata', getdata);
+
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/user', user);
 app.use('/api/v1/admin', admin);

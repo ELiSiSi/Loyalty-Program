@@ -5,8 +5,7 @@
     "departure_city": "Cairo",
     "arrival_city": "Dubai",
     "flight_description": "Direct flight from Cairo to Dubai",
-    "flight_image": "cairo-dubai.jpg",
-    "reward_points": 850
+    "flight_image": "cairo-dubai.jpg"
   },
   {
     "flight_name": "Cairo to Riyadh Flight",
@@ -14,8 +13,7 @@
     "departure_city": "Cairo",
     "arrival_city": "Riyadh",
     "flight_description": "Direct flight from Cairo to Riyadh",
-    "flight_image": "cairo-riyadh.jpg",
-    "reward_points": 700
+    "flight_image": "cairo-riyadh.jpg"
   },
   {
     "flight_name": "Cairo to Jeddah Flight",
@@ -23,8 +21,7 @@
     "departure_city": "Cairo",
     "arrival_city": "Jeddah",
     "flight_description": "Direct flight from Cairo to Jeddah",
-    "flight_image": "cairo-jeddah.jpg",
-    "reward_points": 650
+    "flight_image": "cairo-jeddah.jpg"
   },
   {
     "flight_name": "Cairo to Kuwait Flight",
@@ -32,8 +29,7 @@
     "departure_city": "Cairo",
     "arrival_city": "Kuwait",
     "flight_description": "Direct flight from Cairo to Kuwait",
-    "flight_image": "cairo-kuwait.jpg",
-    "reward_points": 600
+    "flight_image": "cairo-kuwait.jpg"
   },
   {
     "flight_name": "Cairo to Doha Flight",
@@ -41,8 +37,7 @@
     "departure_city": "Cairo",
     "arrival_city": "Doha",
     "flight_description": "Direct flight from Cairo to Doha",
-    "flight_image": "cairo-doha.jpg",
-    "reward_points": 620
+    "flight_image": "cairo-doha.jpg"
   },
   {
     "flight_name": "Cairo to Abu Dhabi Flight",
@@ -50,8 +45,7 @@
     "departure_city": "Cairo",
     "arrival_city": "Abu Dhabi",
     "flight_description": "Direct flight from Cairo to Abu Dhabi",
-    "flight_image": "cairo-abudhabi.jpg",
-    "reward_points": 680
+    "flight_image": "cairo-abudhabi.jpg"
   },
   {
     "flight_name": "Cairo to Istanbul Flight",
@@ -59,8 +53,7 @@
     "departure_city": "Cairo",
     "arrival_city": "Istanbul",
     "flight_description": "Direct flight from Cairo to Istanbul",
-    "flight_image": "cairo-istanbul.jpg",
-    "reward_points": 950
+    "flight_image": "cairo-istanbul.jpg"
   },
   {
     "flight_name": "Cairo to London Flight",
@@ -68,8 +61,7 @@
     "departure_city": "Cairo",
     "arrival_city": "London",
     "flight_description": "Direct flight from Cairo to London",
-    "flight_image": "cairo-london.jpg",
-    "reward_points": 1500
+    "flight_image": "cairo-london.jpg"
   },
   {
     "flight_name": "Cairo to Paris Flight",
@@ -77,8 +69,7 @@
     "departure_city": "Cairo",
     "arrival_city": "Paris",
     "flight_description": "Direct flight from Cairo to Paris",
-    "flight_image": "cairo-paris.jpg",
-    "reward_points": 1450
+    "flight_image": "cairo-paris.jpg"
   },
   {
     "flight_name": "Cairo to New York Flight",
