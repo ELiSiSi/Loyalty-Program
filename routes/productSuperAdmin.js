@@ -5,11 +5,9 @@ import { protect, restrictTo } from '../middleware/auth.js';
 import { uploadImage } from '../middleware/uploadPhoto.js';
 
 import {
-  createProduct,
   deleteProduct,
   getAllProducts,
   getProduct,
-  updateProduct,
 } from '../controller/productSuperAdmin.js';
 
 router.use(protect);
@@ -19,9 +17,7 @@ router.get('/', getAllProducts);
 
 router.get('/:id', getProduct);
 
-router.post('/', uploadImage, createProduct);
 
-router.patch('/:id', uploadImage, updateProduct);
 
 router.delete('/:id', deleteProduct);
 

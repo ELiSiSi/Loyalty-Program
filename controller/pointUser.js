@@ -7,8 +7,8 @@ import catchAsync from '../utils/catchAsync.js';
 
 export const getMyPoints = catchAsync(async (req, res) => {
   const points = await Point.find({
-    companyId: req.user.company,
-  }).populate('companyId');
+    userId: req.user._id,
+  })
 
   res.status(200).json({
     status: 'success',
@@ -17,9 +17,10 @@ export const getMyPoints = catchAsync(async (req, res) => {
   });
 });
 
+
 export const getOnePoint = catchAsync(async (req, res) => {
   const point = await Point.findOne({
-    companyId: req.user.company,
+    userId: req.user._id,
     _id: req.params.id
   })
 
@@ -31,6 +32,5 @@ export const getOnePoint = catchAsync(async (req, res) => {
     status: 'success',
     data: { point },
   })
-  }
+}
 )
-
