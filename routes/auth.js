@@ -8,6 +8,7 @@ import {
   refreshAccessToken,
   resetPassword,
   signup,
+  verifyEmail,
 } from '../controller/auth.js';
 import { protect } from '../middleware/auth.js';
 
@@ -15,7 +16,7 @@ import { protect } from '../middleware/auth.js';
  * @swagger
  * /api/v1/auth/signup:
  *   post:
- *     summary: Create new user account
+ *     summary: Register a new user
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -28,22 +29,64 @@ import { protect } from '../middleware/auth.js';
  *               - email
  *               - password
  *               - passwordConfirm
+ *               - phone
  *             properties:
  *               name:
  *                 type: string
+ *                 example: Ahmed Rezk
  *               email:
  *                 type: string
+ *                 example: ahmed@gmail.com
+ *               phone:
+ *                 type: string
+ *                 example: "01012345678"
  *               password:
  *                 type: string
+ *                 example: Ahmed@123
  *               passwordConfirm:
  *                 type: string
- *               photo:
- *                 type: string
+ *                 example: Ahmed@123
  *     responses:
  *       201:
- *         description: User created successfully
+ *         description: User registered successfully and OTP sent to email.
+ *       400:
+ *         description: Validation error.
  */
-router.post('/signup/', signup);
+router.post('/signup', signup);
+
+/**
+ * @swagger
+ * /api/v1/auth/verify-email:
+ *   post:
+ *     summary: Verify user email using OTP
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - otp
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: ahmed@gmail.com
+ *               otp:
+ *                 type: string
+ *                 example: "123456"
+ *     responses:
+ *       200:
+ *         description: Email verified successfully.
+ *       400:
+ *         description: Invalid OTP.
+ *       404:
+ *         description: User not found.
+ */
+router.post('/verify-email', verifyEmail);
+
+
 /**
  * @swagger
  * /auth/login:

@@ -2,6 +2,7 @@
   {
     "flight_name": "Cairo to Dubai Flight",
     "ticket_price": 8500,
+    "category": "Flight",
     "departure_city": "Cairo",
     "arrival_city": "Dubai",
     "flight_description": "Direct flight from Cairo to Dubai",
@@ -10,6 +11,7 @@
   {
     "flight_name": "Cairo to Riyadh Flight",
     "ticket_price": 7000,
+    "category": "Flight",
     "departure_city": "Cairo",
     "arrival_city": "Riyadh",
     "flight_description": "Direct flight from Cairo to Riyadh",
@@ -18,6 +20,7 @@
   {
     "flight_name": "Cairo to Jeddah Flight",
     "ticket_price": 6500,
+    "category": "Flight",
     "departure_city": "Cairo",
     "arrival_city": "Jeddah",
     "flight_description": "Direct flight from Cairo to Jeddah",
@@ -26,6 +29,7 @@
   {
     "flight_name": "Cairo to Kuwait Flight",
     "ticket_price": 6000,
+    "category": "Flight",
     "departure_city": "Cairo",
     "arrival_city": "Kuwait",
     "flight_description": "Direct flight from Cairo to Kuwait",
@@ -34,6 +38,7 @@
   {
     "flight_name": "Cairo to Doha Flight",
     "ticket_price": 6200,
+    "category": "Flight",
     "departure_city": "Cairo",
     "arrival_city": "Doha",
     "flight_description": "Direct flight from Cairo to Doha",
@@ -42,6 +47,7 @@
   {
     "flight_name": "Cairo to Abu Dhabi Flight",
     "ticket_price": 6800,
+    "category": "Flight",
     "departure_city": "Cairo",
     "arrival_city": "Abu Dhabi",
     "flight_description": "Direct flight from Cairo to Abu Dhabi",
@@ -50,6 +56,7 @@
   {
     "flight_name": "Cairo to Istanbul Flight",
     "ticket_price": 9500,
+    "category": "Flight",
     "departure_city": "Cairo",
     "arrival_city": "Istanbul",
     "flight_description": "Direct flight from Cairo to Istanbul",
@@ -58,6 +65,7 @@
   {
     "flight_name": "Cairo to London Flight",
     "ticket_price": 15000,
+    "category": "Flight",
     "departure_city": "Cairo",
     "arrival_city": "London",
     "flight_description": "Direct flight from Cairo to London",
@@ -66,6 +74,7 @@
   {
     "flight_name": "Cairo to Paris Flight",
     "ticket_price": 14500,
+    "category": "Flight",
     "departure_city": "Cairo",
     "arrival_city": "Paris",
     "flight_description": "Direct flight from Cairo to Paris",
@@ -74,6 +83,7 @@
   {
     "flight_name": "Cairo to New York Flight",
     "ticket_price": 25000,
+    "flight_category": "Flight",
     "departure_city": "Cairo",
     "arrival_city": "New York",
     "flight_description": "Direct flight from Cairo to New York",

@@ -6,22 +6,24 @@ export class Email {
     this.to = user.email;
     this.name = user.name.split(' ')[0];
     this.url = url;
+    this.otpConfirmEmail = user.otpConfirmEmail;
   }
 
   newTransport() {
     const username = process.env.MY_EMAIL_USERNAME;
     const password = process.env.MY_EMAIL_PASSWORD;
 
-    console.log('DEBUG EMAIL CREDENTIALS:', {
-      username,
-      hasPassword: !!password,
-    });
-
     return nodemailer.createTransport({
       service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // true for port 465, false for other ports
       auth: {
         user: username,
         pass: password,
+      },
+      tls: {
+        rejectUnauthorized: false,
       },
     });
   }
@@ -37,12 +39,17 @@ export class Email {
       text: htmlToText(html),
     };
 
-    const info = await this.newTransport().sendMail(mailOptions);
-    console.log('Email sent successfully! MessageID:', info.messageId);
+    try {
+      const info = await this.newTransport().sendMail(mailOptions);
+      console.log('Email sent successfully! MessageID:', info.messageId);
+    } catch (err) {
+      console.error('Error sending email:', err);
+      throw err; // rethrow عشان الـ asyncHandler يكشفها
+    }
   }
 
   generateHtml(template) {
-    if (template === 'welcome' || template === 'welcomeAdmin') {
+    if (template === 'welcomeAdmin') {
       return `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>Welcome to the Rehletna Family, ${this.name}!</h2>
@@ -50,6 +57,21 @@ export class Email {
           <a href="${this.url}" style="display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 4px;">
             Get Started
           </a>
+        </div>
+      `;
+    }
+
+    if (template === 'welcome') {
+      return `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>Welcome to Rehletna, ${this.name}! 🎉</h2>
+          <p>Thank you for registering.</p>
+          <p>Please use the following verification code:</p>
+          <div style="font-size: 32px; font-weight: bold; letter-spacing: 8px; background: #f4f4f4; padding: 20px; text-align: center; border-radius: 8px;">
+            ${this.otpConfirmEmail}
+          </div>
+          <p>This code will expire in <strong>10 minutes</strong>.</p>
+          <p>If you didn't create this account, you can ignore this email.</p>
         </div>
       `;
     }
@@ -74,7 +96,10 @@ export class Email {
   }
 
   async sendWelcome() {
-    await this.send('welcome', 'Welcome to the Rehletna Family!');
+    await this.send(
+      'welcome',
+      `Welcome to the Rehletna Family! Your OTP: ${this.otpConfirmEmail}`
+    );
   }
 
   async sendPasswordReset() {

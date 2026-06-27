@@ -99,7 +99,7 @@ router.get('/:id', getProduct);
  *       400:
  *         description: Validation error
  */
-router.post('/', uploadImage, createProduct);
+router.post('/',  createProduct);
 
 /**
  * @swagger

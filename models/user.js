@@ -17,9 +17,13 @@ const userSchema = new mongoose.Schema(
 
     photo: {
       type: String,
-      default: 'uploads/general/download.jpg',
+      default:
+        'https://res.cloudinary.com/dr0xirap5/image/upload/v1782557156/uploads/general/8ef3b9e8-e2ce-4c43-a656-ae39caecd6c1.jpg',
     },
-
+    phone: {
+      type: String,
+      lowercase: true,
+    },
     role: {
       type: String,
       enum: ['user', 'superAdmin', 'admin'],
@@ -75,6 +79,16 @@ const userSchema = new mongoose.Schema(
     refreshTokenExpires: {
       type: Date,
       select: false,
+    },
+
+    otpConfirmEmail: {
+      type: String,
+      select: false,
+    },
+    otpConfirmEmailExpires: {
+      type: Date,
+      select: false,
+      default: null,
     },
 
     bookings: [

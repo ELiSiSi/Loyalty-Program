@@ -14,6 +14,7 @@ const createSuperAdmin = async () => {
       password: '12345678',
       passwordConfirm: '12345678',
       role: 'superAdmin',
+      otpConfirmEmailExpires:null,
     });
 
     console.log('Super Admin created:', superAdmin.email);

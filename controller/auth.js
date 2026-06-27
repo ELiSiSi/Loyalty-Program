@@ -2,8 +2,11 @@ import crypto from 'crypto';
 import asyncHandler from 'express-async-handler';
 import JWT from 'jsonwebtoken';
 
+import { Email } from '../utils/email.js';
+
 import User from '../models/user.js';
 import AppError from '../utils/appError.js';
+import Point from '../models/point.js';
 
 export const signAccessToken = (payload) =>
   JWT.sign(payload, process.env.JWT_ACCESS_SECRET, {
@@ -74,14 +77,25 @@ const issueTokens = async (user, res) => {
 };
 
 export const signup = asyncHandler(async (req, res) => {
+  const otpConfirmEmail = Math.floor(100000 + Math.random() * 900000);
+
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
-    photo: req.body.photo,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
+    phone: req.body.phone,
     pendingPoints: 200,
+    totalPoints:200,
+    otpConfirmEmail,
+    otpConfirmEmailExpires: Date.now() + 10 * 60 * 1000,
   });
+const point = await Point.create({
+  userId: newUser._id,
+  earngPoints: 200,
+  due: 'signup',
+});
+  await new Email(newUser, '').sendWelcome();
 
   const { accessToken } = await issueTokens(newUser, res);
 
@@ -91,11 +105,49 @@ export const signup = asyncHandler(async (req, res) => {
     status: 'success',
     accessToken,
     data: {
-      user: newUser,
+name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      pendingPoints: 200
+
+
     },
   });
 });
 
+
+export const verifyEmail = asyncHandler(async (req, res, next) => {
+  const { email, otp } = req.body;
+
+  // ضيف .select('+otpConfirmEmail') عشان تجيب الـ field اللي معمول عليه select: false
+  const user = await User.findOne({ email }).select(
+    '+otpConfirmEmail +otpConfirmEmailExpires'
+  );
+
+  if (!user) {
+    return next(new AppError('User not found', 404));
+  }
+
+  // اتأكد إن الـ OTP لسه صالح
+  if (user.otpConfirmEmailExpires && Date.now() > user.otpConfirmEmailExpires) {
+    return next(new AppError('OTP has expired', 400));
+  }
+
+  if (user.otpConfirmEmail != otp) {
+    return next(new AppError('Invalid OTP', 400));
+  }
+
+  user.emailVerified = true;
+  user.otpConfirmEmail = null;
+  user.otpConfirmEmailExpires = null;
+
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Email verified successfully',
+  });
+});
 export const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 

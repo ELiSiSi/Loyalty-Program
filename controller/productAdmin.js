@@ -41,6 +41,70 @@ export const getProduct = catchAsync(async (req, res, next) => {
   });
 });
 
+
+// export const createProduct = catchAsync(async (req, res, next) => {
+//   const { url, addPoints } = req.body;
+
+//   if (!url) {
+//     return next(new AppError('Please provide URL and Category', 400));
+//   }
+
+//   const response = await fetch(url);
+//   if (!response.ok) {
+//     return next(
+//       new AppError('Failed to fetch data from the provided URL', 400)
+//     );
+//   }
+
+//   const flightsData = await response.json();
+
+//   const company = req.user.company;
+//   if (!company) {
+//     return next(new AppError('You are not assigned to any company', 400));
+//   }
+
+//   const companyExists = await Company.findById(company);
+//   if (!companyExists) {
+//     return next(new AppError('Company not found', 404));
+//   }
+
+//   const categoryFound = await Category.findById(category);
+//   if (!categoryFound) {
+//     return next(new AppError('Category not found', 404));
+//   }
+
+//   const pointConfig = await getPointConfig(company);
+//   const finalAddPoints = Array.isArray(addPoints) ? addPoints : [];
+
+//   const productsToCreate = flightsData.map((flight) => {
+//     const basePoints = calculateBasePoints(flight.ticket_price, pointConfig);
+
+//     return {
+//       name: flight.flight_name,
+//       price: flight.ticket_price,
+//       image: flight.flight_image,
+//       description: flight.flight_description,
+//       departureCity: flight.departure_city,
+//       arrivalCity: flight.arrival_city,
+//       company: company,
+//       category: flight.flight_category,
+//       points: basePoints,
+//       addPoints: finalAddPoints,
+//     };
+//   });
+
+//   const newProducts = await Product.insertMany(productsToCreate);
+
+//   res.status(201).json({
+//     status: 'success',
+//     results: newProducts.length,
+//     data: {
+//       products: newProducts,
+//     },
+//   });
+// });
+
+
 export const createProduct = catchAsync(async (req, res, next) => {
   const { price, category, addPoints } = req.body;
   const company = req.user.company;

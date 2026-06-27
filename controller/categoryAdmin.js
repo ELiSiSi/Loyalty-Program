@@ -27,7 +27,6 @@ export const getCategory = catchAsync(async (req, res, next) => {
 });
 
 export const createCategory = catchAsync(async (req, res, next) => {
-  console.log('LOG: Current User from Protect:', req.user);
 
   const categoryData = { ...req.body };
   categoryData.companyId = req.user?.company;

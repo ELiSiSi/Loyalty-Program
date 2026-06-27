@@ -1,5 +1,7 @@
 import cron from 'node-cron';
 import Booking from '../models/booking.js';
+import User from '../models/user.js';
+import Point from '../models/point.js';
 
 cron.schedule('*/10 * * * *', async () => {
   try {
@@ -7,17 +9,38 @@ cron.schedule('*/10 * * * *', async () => {
 
     const expiredTime = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-    const result = await Booking.updateMany(
+    await Booking.updateMany(
       {
         bookingStatus: 'pending',
         paymentStatus: 'pending',
         createdAt: { $lte: expiredTime },
       },
       {
-        $set: { bookingStatus: 'cancelled' },
+        $set: {
+          bookingStatus: 'cancelled',
+        },
       }
     );
+
+    const expiredUsers = await User.find({
+      otpConfirmEmailExpires: { $lt: now },
+    });
+
+    for (const user of expiredUsers) {
+      await Point.create({
+        userId: user._id,
+        lostPoints: 200,
+        due: 'signup',
+      });
+    }
+
+    await User.deleteMany({
+      _id: {
+        $in: expiredUsers.map((user) => user._id),
+      },
+    });
+
   } catch (err) {
-    console.log('Auto cancel error:', err.message);
+    console.log('Cron error:', err.message);
   }
 });

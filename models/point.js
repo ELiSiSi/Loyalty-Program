@@ -2,46 +2,29 @@ import mongoose from "mongoose";
 
 const pointSchema = new mongoose.Schema(
   {
-    usedPoints: {
+
+userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'Please tell us your user'],
+},
+earngPoints: {
       type: Number,
       required: [true, 'Please tell us your points'],
       default: 0,
     },
-    pendingPoints: {
+LostPoints: {
       type: Number,
-      required: [true, 'Please tell us your pending points'],
-      default: 0,
-    },
-    allPoints: {
-      type: Number,
-      required: [true, 'Please tell us your all points'],
       default: 0,
     },
 
-    name: {
+    due: {
       type: String,
-      required: [true, 'Please tell us your name'],
-    },
-    currency: {
-      type: String,
-      required: [true, 'Please tell us your currency'],
-    },
+},
 
-    pointValue: {
-      type: Number,
-      required: [true, 'Please provide point value'],
-      min: 0,
-    },
-    pointsPercentage: {
-      type: Number,
-      required: [true, 'Please provide points percentage'],
-      min: 0,
-      max: 100,
-    },
     companyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Company',
-      required: [true, 'Please tell us your company'],
     },
 
   },
