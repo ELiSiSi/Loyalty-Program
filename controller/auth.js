@@ -107,11 +107,11 @@ export const signup = asyncHandler(async (req, res, next) => {
     due: 'signup',
   });
 
-  try {
-    await new Email(newUser, '').sendWelcome();
-  } catch (err) {
-    console.error('⚠️ Critical Email Warning:', err.message);
-  }
+try {
+  await new Email(newUser, '').sendWelcome();
+} catch (err) {
+  console.error('⚠️ Email Error FULL:', err); 
+}
 
   const { accessToken } = await issueTokens(newUser, res);
 

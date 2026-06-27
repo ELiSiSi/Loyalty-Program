@@ -40,12 +40,9 @@ export class Email {
 
     try {
       const info = await this.newTransport().sendMail(mailOptions);
-      console.log(
-        ` Email sent successfully from Gmail! MessageID:`,
-        info.messageId
-      );
+      console.log(`Email sent successfully! MessageID:`, info.messageId);
     } catch (err) {
-      console.error(' Error inside Email Service:', err.message);
+      console.error('Error inside Email Service:', err.message);
       throw err;
     }
   }

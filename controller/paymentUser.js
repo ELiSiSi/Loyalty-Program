@@ -1,5 +1,6 @@
 import Booking from '../models/booking.js';
 import Payment from '../models/payment.js';
+import Point from '../models/point.js';
 import User from '../models/user.js';
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
@@ -16,34 +17,47 @@ export const createPayment = catchAsync(async (req, res, next) => {
     return next(new AppError('Booking not found', 404));
   }
 
-  const existingPayment = await Payment.findOne({ bookingId });
-
-  if (existingPayment) {
+  if (booking.paymentStatus === 'paid') {
     return next(new AppError('Booking already paid', 400));
   }
+
+  const existingPayment = await Payment.findOne({ bookingId });
+  if (existingPayment) {
+    return next(new AppError('Payment already exists for this booking', 400));
+  }
+
+  const user = await User.findById(req.user._id);
+
+  user.pendingPoints -= booking.earnedPoints;
+  user.availablePoints += booking.earnedPoints;
+
+  const countPayments = await Payment.countDocuments({ userId: req.user._id });
+  if (countPayments === 0) {
+    user.pendingPoints -= 200;
+    user.availablePoints += 200;
+  }
+
+  await user.save({ validateBeforeSave: false });
 
   const newPayment = await Payment.create({
     userId: req.user._id,
     bookingId,
   });
-  const countPayments = await Payment.find({
+
+  await Point.create({
+    companyId: booking.company,
     userId: req.user._id,
+    earngPoints: booking.earnedPoints,
+    due: `payment booking`,
   });
 
-  if (countPayments.length == 1) {
-    const user = await User.findById(req.user._id);
-    user.pendingPoints -= 200;
-    user.availablePoints += 200;
-   await user.save({ validateBeforeSave: false });
-  }
-  booking.bookingStatus = 'paid';
+  booking.bookingStatus = 'confirmed';
+  booking.paymentStatus = 'paid';
   await booking.save({ validateBeforeSave: false });
 
   res.status(201).json({
     status: 'success',
-    data: {
-      payment: newPayment,
-    },
+    data: { payment: newPayment },
   });
 });
 

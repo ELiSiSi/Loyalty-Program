@@ -133,32 +133,29 @@ export const cancelBooking = catchAsync(async (req, res, next) => {
 
   const user = await User.findById(booking.user);
 
-  const pointSystem = await Point.findOne({
-    companyId: booking.company,
-  });
-
-  if (!pointSystem) {
-    return next(new AppError('Point system not found', 404));
+  if (!user) {
+    return next(new AppError('User not found', 404));
   }
 
   user.pendingPoints -= booking.earnedPoints;
   user.availablePoints += booking.usedPoints;
-
-  pointSystem.pendingPoints -= booking.earnedPoints;
-  pointSystem.usedPoints -= booking.usedPoints;
-  pointSystem.allPoints += booking.usedPoints;
+  user.totalPoints -= booking.earnedPoints;
 
   await user.save({ validateBeforeSave: false });
-  await pointSystem.save({ validateBeforeSave: false });
+
+  await Point.create({
+    companyId: booking.company,
+    userId: user._id,
+    LostPoints: booking.earnedPoints,
+    due: `cancel booking`,
+  });
 
   booking.bookingStatus = 'cancelled';
   await booking.save({ validateBeforeSave: false });
 
   res.status(200).json({
     status: 'success',
-    data: {
-      booking,
-    },
+    data: { booking },
   });
 });
 export const updateMyBooking = catchAsync(async (req, res, next) => {
