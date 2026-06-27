@@ -6,6 +6,7 @@ import User from '../models/user.js';
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
 
+
 export const createBooking = catchAsync(async (req, res, next) => {
   const { productId, quantity = 1, couponCode, usedPoints = 0 } = req.body;
 
@@ -13,7 +14,6 @@ export const createBooking = catchAsync(async (req, res, next) => {
     .populate('company')
     .populate('category')
     .populate('gifts');
-
 
   if (!product) {
     return next(new AppError('Product not found', 404));
@@ -23,14 +23,6 @@ export const createBooking = catchAsync(async (req, res, next) => {
 
   if (!user) {
     return next(new AppError('User not found', 404));
-  }
-
-  const pointSystem = await Point.findOne({
-    companyId: product.company._id,
-  });
-
-  if (!pointSystem) {
-    return next(new AppError('Point system not found', 404));
   }
 
   let totalPrice = product.price * quantity;
@@ -65,13 +57,9 @@ export const createBooking = catchAsync(async (req, res, next) => {
 
   user.availablePoints -= usedPoints;
   user.pendingPoints += earnedPoints;
-
-  pointSystem.usedPoints += usedPoints;
-  pointSystem.allPoints += earnedPoints;
-  pointSystem.pendingPoints += earnedPoints;
+  user.totalPoints += earnedPoints;
 
   await user.save({ validateBeforeSave: false });
-  await pointSystem.save({ validateBeforeSave: false });
 
   const booking = await Booking.create({
     user: user._id,
@@ -87,6 +75,13 @@ export const createBooking = catchAsync(async (req, res, next) => {
     finalPrice,
   });
 
+  await Point.create({
+    companyId: product.company._id,
+    userId: user._id,
+    usedPoints: earnedPoints,
+    due: `booking ${product.name}`,
+  });
+
   const populatedBooking = await Booking.findById(booking._id);
 
   res.status(201).json({
@@ -96,7 +91,6 @@ export const createBooking = catchAsync(async (req, res, next) => {
     },
   });
 });
-
 export const getMyAllBookings = catchAsync(async (req, res) => {
   const bookings = await Booking.find({ user: req.user._id });
 
@@ -108,7 +102,6 @@ export const getMyAllBookings = catchAsync(async (req, res) => {
     },
   });
 });
-
 export const getMyBooking = catchAsync(async (req, res, next) => {
   const booking = await Booking.findOne({
     _id: req.params.id,
@@ -168,9 +161,8 @@ export const cancelBooking = catchAsync(async (req, res, next) => {
     },
   });
 });
-
 export const updateMyBooking = catchAsync(async (req, res, next) => {
-  const { couponCode, usedPoints, quantity } = req.body;
+  const { couponCode, quantity, usedPoints } = req.body;
 
   const booking = await Booking.findOne({
     _id: req.params.id,
@@ -190,7 +182,6 @@ export const updateMyBooking = catchAsync(async (req, res, next) => {
   }
 
   const product = await Product.findById(booking.product);
-
   const user = await User.findById(req.user._id);
 
   const pointSystem = await Point.findOne({
@@ -263,6 +254,13 @@ export const updateMyBooking = catchAsync(async (req, res, next) => {
   await booking.save({ validateBeforeSave: false });
 
   const updated = await Booking.findById(booking._id);
+
+  await Point.create({
+    companyId: product.company._id,
+    userId: user._id,
+    usedPoints: earnedPoints,
+    due: `booking ${product.name}`,
+  });
 
   res.status(200).json({
     status: 'success',

@@ -17,7 +17,7 @@ export class Email {
       service: 'gmail',
       host: 'smtp.gmail.com',
       port: 587,
-      secure: false, // true for port 465, false for other ports
+      secure: false,
       auth: {
         user: username,
         pass: password,
@@ -44,7 +44,7 @@ export class Email {
       console.log('Email sent successfully! MessageID:', info.messageId);
     } catch (err) {
       console.error('Error sending email:', err);
-      throw err; // rethrow عشان الـ asyncHandler يكشفها
+      throw err;
     }
   }
 

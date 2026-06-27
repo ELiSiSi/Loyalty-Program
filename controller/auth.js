@@ -76,7 +76,15 @@ const issueTokens = async (user, res) => {
   return { accessToken, refreshToken };
 };
 
-export const signup = asyncHandler(async (req, res) => {
+export const signup = asyncHandler(async (req, res, next) => {
+  const existingUser = await User.findOne({ email: req.body.email });
+  if (existingUser) {
+    return res.status(409).json({
+      status: 'fail',
+      message: 'Email already registered. Please login or use another email.',
+    });
+  }
+
   const otpConfirmEmail = Math.floor(100000 + Math.random() * 900000);
 
   const newUser = await User.create({
@@ -86,15 +94,17 @@ export const signup = asyncHandler(async (req, res) => {
     passwordConfirm: req.body.passwordConfirm,
     phone: req.body.phone,
     pendingPoints: 200,
-    totalPoints:200,
+    totalPoints: 200,
     otpConfirmEmail,
     otpConfirmEmailExpires: Date.now() + 10 * 60 * 1000,
   });
-const point = await Point.create({
-  userId: newUser._id,
-  earngPoints: 200,
-  due: 'signup',
-});
+
+  await Point.create({
+    userId: newUser._id,
+    earngPoints: 200,
+    due: 'signup',
+  });
+
   await new Email(newUser, '').sendWelcome();
 
   const { accessToken } = await issueTokens(newUser, res);
@@ -105,16 +115,13 @@ const point = await Point.create({
     status: 'success',
     accessToken,
     data: {
-name: req.body.name,
-      email: req.body.email,
-      phone: req.body.phone,
-      pendingPoints: 200
-
-
+      name: newUser.name,
+      email: newUser.email,
+      phone: newUser.phone,
+      pendingPoints: newUser.pendingPoints,
     },
   });
 });
-
 
 export const verifyEmail = asyncHandler(async (req, res, next) => {
   const { email, otp } = req.body;
