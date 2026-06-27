@@ -10,28 +10,17 @@ export class Email {
   }
 
   newTransport() {
-    if (process.env.NODE_ENV === 'production') {
-      return nodemailer.createTransport({
-        service: 'gmail',
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-          user: process.env.MY_EMAIL_USERNAME,
-          pass: process.env.MY_EMAIL_PASSWORD,
-        },
-        tls: {
-          rejectUnauthorized: false,
-        },
-      });
-    }
-
     return nodemailer.createTransport({
-      host: process.env.EMAIL_HOST || 'sandbox.smtp.mailtrap.io',
-      port: process.env.EMAIL_PORT || 2525,
+      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
       auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD,
+        user: process.env.MY_EMAIL_USERNAME,
+        pass: process.env.MY_EMAIL_PASSWORD,
+      },
+      tls: {
+        rejectUnauthorized: false,
       },
     });
   }
@@ -52,11 +41,11 @@ export class Email {
     try {
       const info = await this.newTransport().sendMail(mailOptions);
       console.log(
-        `✅ Email sent successfully using [${process.env.NODE_ENV || 'development'}] mode! MessageID:`,
+        ` Email sent successfully from Gmail! MessageID:`,
         info.messageId
       );
     } catch (err) {
-      console.error('❌ Error inside Email Service:', err.message);
+      console.error(' Error inside Email Service:', err.message);
       throw err;
     }
   }

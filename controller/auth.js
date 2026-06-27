@@ -79,7 +79,6 @@ const issueTokens = async (user, res) => {
 export const signup = asyncHandler(async (req, res, next) => {
   const { name, email, password, passwordConfirm, phone } = req.body;
 
-  // 1️⃣ التحقق المسبق من عدم تكرار الإيميل
   const userExists = await User.findOne({ email });
   if (userExists) {
     return res.status(400).json({
@@ -90,7 +89,6 @@ export const signup = asyncHandler(async (req, res, next) => {
 
   const otpConfirmEmail = Math.floor(100000 + Math.random() * 900000);
 
-  // 2️⃣ إنشاء المستخدم في الداتا بيز
   const newUser = await User.create({
     name,
     email,
@@ -103,22 +101,18 @@ export const signup = asyncHandler(async (req, res, next) => {
     otpConfirmEmailExpires: Date.now() + 10 * 60 * 1000,
   });
 
-  // 3️⃣ إنشاء سجل النقاط (تأكد من اسم الحقل earngPoints أو earnedPoints حسب الـ Schema عندك)
   await Point.create({
     userId: newUser._id,
-    earngPoints: 200, // راجع حروف الكلمة دي مع السكيما بتاعتك
+    earngPoints: 200,
     due: 'signup',
   });
 
-  // 4️⃣ إرسال إيميل الترحيب داخل try/catch (🛡️ حماية الـ API من الانهيار)
   try {
     await new Email(newUser, '').sendWelcome();
   } catch (err) {
-    // لو الإيميل فشل، السيرفر مش هيقع، هلطع اللوج ده في الـ Console ويكمل عادي لراحة العميل
     console.error('⚠️ Critical Email Warning:', err.message);
   }
 
-  // 5️⃣ توليد الـ Access Token والرد بنجاح
   const { accessToken } = await issueTokens(newUser, res);
 
   res.status(201).json({
