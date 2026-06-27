@@ -101,11 +101,14 @@ export const signup = asyncHandler(async (req, res, next) => {
 
   await Point.create({
     userId: newUser._id,
-    earngPoints: 200,
+    usedPoints: 200,
     due: 'signup',
   });
 
-  await new Email(newUser, '').sendWelcome();
+  const userWithOtp = await User.findById(newUser._id).select(
+    '+otpConfirmEmail'
+  );
+  await new Email(userWithOtp, '').sendWelcome();
 
   const { accessToken } = await issueTokens(newUser, res);
 
