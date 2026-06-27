@@ -3,7 +3,6 @@ import Product from '../models/product.js';
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
 
-import { calculateProductPoints } from '../services/pointsService.js';
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
   const products = await Product.find({ isActive: true });
@@ -16,7 +15,6 @@ export const getAllProducts = catchAsync(async (req, res, next) => {
 
       return {
         ...product.toObject(),
-        points: pointConfig ? calculateProductPoints(product, pointConfig) : 0,
       };
     })
   );
@@ -45,7 +43,6 @@ export const getProduct = catchAsync(async (req, res, next) => {
     companyId: product.company,
   });
 
-  const points = pointConfig ? calculateProductPoints(product, pointConfig) : 0;
 
   res.status(200).json({
     status: 'success',

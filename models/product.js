@@ -35,11 +35,7 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
-    points: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
+
 
     isActive: {
       type: Boolean,
@@ -71,7 +67,6 @@ const productSchema = new mongoose.Schema(
         },
       },
     ],
-    default: [],
   },
   {
     timestamps: true,
