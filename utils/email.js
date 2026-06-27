@@ -4,26 +4,34 @@ import { htmlToText } from 'html-to-text';
 export class Email {
   constructor(user, url) {
     this.to = user.email;
-    this.name = user.name.split(' ')[0];
+    this.name = user.name ? user.name.split(' ')[0] : 'User';
     this.url = url;
     this.otpConfirmEmail = user.otpConfirmEmail;
   }
 
   newTransport() {
-    const username = process.env.MY_EMAIL_USERNAME;
-    const password = process.env.MY_EMAIL_PASSWORD;
+    if (process.env.NODE_ENV === 'production') {
+      return nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: process.env.MY_EMAIL_USERNAME,
+          pass: process.env.MY_EMAIL_PASSWORD,
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+    }
 
     return nodemailer.createTransport({
-      service: 'gmail',
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
+      host: process.env.EMAIL_HOST || 'sandbox.smtp.mailtrap.io',
+      port: process.env.EMAIL_PORT || 2525,
       auth: {
-        user: username,
-        pass: password,
-      },
-      tls: {
-        rejectUnauthorized: false,
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
       },
     });
   }
@@ -32,7 +40,9 @@ export class Email {
     const html = this.generateHtml(template);
 
     const mailOptions = {
-      from: process.env.MY_EMAIL_USERNAME,
+      from:
+        process.env.MY_EMAIL_USERNAME ||
+        'Rehletna Team <no-reply@rehletna.com>',
       to: this.to,
       subject,
       html,
@@ -41,9 +51,12 @@ export class Email {
 
     try {
       const info = await this.newTransport().sendMail(mailOptions);
-      console.log('Email sent successfully! MessageID:', info.messageId);
+      console.log(
+        `✅ Email sent successfully using [${process.env.NODE_ENV || 'development'}] mode! MessageID:`,
+        info.messageId
+      );
     } catch (err) {
-      console.error('Error sending email:', err);
+      console.error('❌ Error inside Email Service:', err.message);
       throw err;
     }
   }
@@ -51,42 +64,47 @@ export class Email {
   generateHtml(template) {
     if (template === 'welcomeAdmin') {
       return `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>Welcome to the Rehletna Family, ${this.name}!</h2>
-          <p>We're excited to have you on board.</p>
-          <a href="${this.url}" style="display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 4px;">
-            Get Started
-          </a>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 8px;">
+          <h2 style="color: #007bff;">Welcome to the Rehletna Family, ${this.name}!</h2>
+          <p>We're excited to have you on board as an administrator.</p>
+          <p>Please click the button below to setup your account password and get started:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${this.url}" style="display: inline-block; padding: 12px 24px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+              Get Started / Setup Account
+            </a>
+          </div>
         </div>
       `;
     }
 
     if (template === 'welcome') {
       return `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>Welcome to Rehletna, ${this.name}! 🎉</h2>
-          <p>Thank you for registering.</p>
-          <p>Please use the following verification code:</p>
-          <div style="font-size: 32px; font-weight: bold; letter-spacing: 8px; background: #f4f4f4; padding: 20px; text-align: center; border-radius: 8px;">
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 8px;">
+          <h2 style="color: #28a745;">Welcome to Rehletna, ${this.name}! 🎉</h2>
+          <p>Thank you for registering with us.</p>
+          <p>Please use the following verification OTP code to activate your account:</p>
+          <div style="font-size: 32px; font-weight: bold; letter-spacing: 8px; background: #f4f4f4; padding: 20px; text-align: center; border-radius: 8px; color: #333; margin: 20px 0;">
             ${this.otpConfirmEmail}
           </div>
-          <p>This code will expire in <strong>10 minutes</strong>.</p>
-          <p>If you didn't create this account, you can ignore this email.</p>
+          <p>This code is secure and will expire in <strong style="color: #dc3545;">10 minutes</strong>.</p>
+          <p style="color: #666; font-size: 12px; margin-top: 30px;">If you didn't create this account, please ignore this email.</p>
         </div>
       `;
     }
 
     if (template === 'passwordReset') {
       return `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>Password Reset Request</h2>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 8px;">
+          <h2 style="color: #dc3545;">Password Reset Request</h2>
           <p>Hi ${this.name},</p>
-          <p>Forgot your password? Click the button below to reset it.</p>
-          <a href="${this.url}" style="display: inline-block; padding: 12px 24px; background: #dc3545; color: white; text-decoration: none; border-radius: 4px;">
-            Reset Password
-          </a>
+          <p>Forgot your password? No problem. Click the button below to reset it securely.</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${this.url}" style="display: inline-block; padding: 12px 24px; background: #dc3545; color: white; text-decoration: none; border-radius: 4px; font-weight: bold;">
+              Reset Password
+            </a>
+          </div>
           <p style="color: #666; font-size: 12px; margin-top: 20px;">
-            This link is valid for only 10 minutes.
+            This link is strictly valid for only <strong>10 minutes</strong>.
           </p>
         </div>
       `;

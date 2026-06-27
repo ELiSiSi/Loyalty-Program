@@ -77,42 +77,49 @@ const issueTokens = async (user, res) => {
 };
 
 export const signup = asyncHandler(async (req, res, next) => {
-  const existingUser = await User.findOne({ email: req.body.email });
-  if (existingUser) {
-    return res.status(409).json({
+  const { name, email, password, passwordConfirm, phone } = req.body;
+
+  // 1️⃣ التحقق المسبق من عدم تكرار الإيميل
+  const userExists = await User.findOne({ email });
+  if (userExists) {
+    return res.status(400).json({
       status: 'fail',
-      message: 'Email already registered. Please login or use another email.',
+      message: 'This email is already registered. Please use another one!',
     });
   }
 
   const otpConfirmEmail = Math.floor(100000 + Math.random() * 900000);
 
+  // 2️⃣ إنشاء المستخدم في الداتا بيز
   const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-    phone: req.body.phone,
+    name,
+    email,
+    password,
+    passwordConfirm,
+    phone,
     pendingPoints: 200,
     totalPoints: 200,
     otpConfirmEmail,
     otpConfirmEmailExpires: Date.now() + 10 * 60 * 1000,
   });
 
+  // 3️⃣ إنشاء سجل النقاط (تأكد من اسم الحقل earngPoints أو earnedPoints حسب الـ Schema عندك)
   await Point.create({
     userId: newUser._id,
-    usedPoints: 200,
+    earngPoints: 200, // راجع حروف الكلمة دي مع السكيما بتاعتك
     due: 'signup',
   });
 
-  const userWithOtp = await User.findById(newUser._id).select(
-    '+otpConfirmEmail'
-  );
-  await new Email(userWithOtp, '').sendWelcome();
+  // 4️⃣ إرسال إيميل الترحيب داخل try/catch (🛡️ حماية الـ API من الانهيار)
+  try {
+    await new Email(newUser, '').sendWelcome();
+  } catch (err) {
+    // لو الإيميل فشل، السيرفر مش هيقع، هلطع اللوج ده في الـ Console ويكمل عادي لراحة العميل
+    console.error('⚠️ Critical Email Warning:', err.message);
+  }
 
+  // 5️⃣ توليد الـ Access Token والرد بنجاح
   const { accessToken } = await issueTokens(newUser, res);
-
-  newUser.password = undefined;
 
   res.status(201).json({
     status: 'success',
