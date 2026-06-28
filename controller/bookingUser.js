@@ -78,7 +78,8 @@ export const createBooking = catchAsync(async (req, res, next) => {
   await Point.create({
     companyId: product.company._id,
     userId: user._id,
-    usedPoints: earnedPoints,
+    earngPoints: earnedPoints,
+    LostPoints: usedPoints,
     due: `booking ${product.name}`,
   });
 

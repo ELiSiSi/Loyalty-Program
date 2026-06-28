@@ -1,16 +1,10 @@
 import Category from '../models/category.js';
 import Company from '../models/company.js';
-import Product from '../models/product.js';
 import Gift from '../models/gift.js';
+import Product from '../models/product.js';
 
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
-
-import {
-  calculateBasePoints,
-  calculateProductPoints,
-  getPointConfig,
-} from '../services/pointsService.js';
 
 export const getAllProducts = catchAsync(async (req, res, next) => {
   const products = await Product.find({
@@ -58,12 +52,20 @@ export const createProduct = catchAsync(async (req, res, next) => {
     Category.findById(req.body.category),
   ]);
 
-  if (!companyExists) {
-    return next(new AppError('Company not found', 404));
-  }
+  if (!companyExists) return next(new AppError('Company not found', 404));
+  if (!categoryFound) return next(new AppError('Category not found', 404));
 
-  if (!categoryFound) {
-    return next(new AppError('Category not found', 404));
+  if (req.body.gifts) {
+    const giftExists = await Gift.findOne({
+      _id: req.body.gifts,
+      company,
+    });
+
+    if (!giftExists) {
+      return next(
+        new AppError('Gift not found or does not belong to your company', 404)
+      );
+    }
   }
 
   let addPoints = req.body.addPoints;
@@ -128,7 +130,6 @@ export const updateProduct = catchAsync(async (req, res, next) => {
     'gifts',
   ];
 
-  // تطبيق التعديلات للحقول المبعوثة فعلياً فقط
   allowedFields.forEach((field) => {
     if (req.body[field] !== undefined) {
       product[field] = req.body[field];

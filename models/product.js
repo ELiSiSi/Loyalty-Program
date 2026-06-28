@@ -87,7 +87,6 @@ productSchema.pre(/^find/, function (next) {
       select: 'name image description',
     });
 
-  next(); 
 });
 
 

@@ -20,6 +20,12 @@ export const createPayment = catchAsync(async (req, res, next) => {
   if (booking.paymentStatus === 'paid') {
     return next(new AppError('Booking already paid', 400));
   }
+  if (booking.bookingStatus === 'cancelled') {
+    return next(new AppError('Booking cancelled', 400));
+  }
+  if (booking.bookingStatus === 'confirmed') {
+    return next(new AppError('Booking already paid', 400));
+  }
 
   const existingPayment = await Payment.findOne({ bookingId });
   if (existingPayment) {
