@@ -8,19 +8,37 @@ import {
   cancelBookingAdmin,
   getAllBookingsAdmin,
   getBookingAdmin,
-  updateBookingAdmin,
-  
 } from '../controller/bookingSuperAdmin.js';
 
 router.use(protect);
 
 router.use(restrictTo('superAdmin'));
 
+/**
+ * @swagger
+ * /api/v1/super-admin/bookings:
+ *   get:
+ *     summary: Get all bookings
+ *     tags: [Super Admin - Bookings]
+ */
 router.get('/', getAllBookingsAdmin);
+
+/**
+ * @swagger
+ * /api/v1/super-admin/bookings/{id}:
+ *   get:
+ *     summary: Get single booking
+ *     tags: [Super Admin - Bookings]
+ */
 router.get('/:id', getBookingAdmin);
 
-router.patch('/:id', updateBookingAdmin);
-
+/**
+ * @swagger
+ * /api/v1/super-admin/bookings/{id}/cancel:
+ *   patch:
+ *     summary: Cancel booking
+ *     tags: [Super Admin - Bookings]
+ */
 router.patch('/:id/cancel', cancelBookingAdmin);
 
 export default router;
