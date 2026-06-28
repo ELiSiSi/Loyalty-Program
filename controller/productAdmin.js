@@ -1,6 +1,8 @@
 import Category from '../models/category.js';
 import Company from '../models/company.js';
 import Product from '../models/product.js';
+import Gift from '../models/gift.js';
+
 import AppError from '../utils/appError.js';
 import catchAsync from '../utils/catchAsync.js';
 
@@ -64,8 +66,18 @@ export const createProduct = catchAsync(async (req, res, next) => {
     return next(new AppError('Category not found', 404));
   }
 
+  let addPoints = req.body.addPoints;
+  if (typeof addPoints === 'string') {
+    try {
+      addPoints = JSON.parse(addPoints);
+    } catch (e) {
+      return next(new AppError('Invalid addPoints format', 400));
+    }
+  }
+
   const productData = {
     ...req.body,
+    addPoints,
     company,
     image: req.file.path.replace(/\\/g, '/'),
   };
@@ -74,9 +86,7 @@ export const createProduct = catchAsync(async (req, res, next) => {
 
   res.status(201).json({
     status: 'success',
-    data: {
-      product: newProduct,
-    },
+    data: { product: newProduct },
   });
 });
 
