@@ -104,43 +104,14 @@ const globalLimiter = rateLimit({
     message_en: 'Too many requests from this IP, please try again later.',
   },
 });
-const options = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Rehletna API',
-      version: '1.0.0',
-      description: 'Loyalty & Booking System',
-    },
-    servers: [
-      {
-        url: 'http://localhost:3000/api/v1',
-      },
-    ],
-  },
-  apis: ['./routes/*.js'],
-};
 
-const swaggerSpec = swaggerJsdoc(options);
-
-const swaggerUiOptions = {
-  customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
-  customJs: [
-    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js'
-  ]
-};
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));
 // ═══════════════════════════════════════════════════════════════════════
 //---------------------------   ROUTES    --------------------------------
 // ═══════════════════════════════════════════════════════════════════════
 app.use('/api/v1', globalLimiter);
 
 
-import getdata from './data/routerEGYPTAIR.js';
 
-app.use('/api/v1/getdata', getdata);
 
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/user', user);

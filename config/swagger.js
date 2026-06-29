@@ -10,7 +10,6 @@ const options = {
       description: 'Auth + Loyalty System',
     },
     servers: [
-      { url: 'http://localhost:3000' },
       { url: 'https://loyalty-program-murex.vercel.app' },
     ],
     components: {
@@ -23,39 +22,12 @@ const options = {
       },
     },
   },
-  apis: [],
+  apis: ['./routes/*.js'],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
 
-swaggerSpec.paths = {
-  '/api/v1/point': {
-    get: {
-      summary: 'جلب نقاط الشركة الخاصة بالمسؤول الحالي',
-      responses: { 200: { description: 'تم جلب البيانات بنجاح' } },
-    },
-    post: {
-      summary: 'إنشاء نظام نقاط جديد للشركة',
-      responses: { 201: { description: 'تم إنشاء نظام النقاط بنجاح' } },
-    },
-  },
-  '/api/v1/point/{id}': {
-    patch: {
-      summary: 'تحديث بيانات نظام النقاط بواسطة الـ ID',
-      parameters: [
-        { in: 'path', name: 'id', required: true, schema: { type: 'string' } },
-      ],
-      responses: { 200: { description: 'تم التحديث بنجاح' } },
-    },
-    delete: {
-      summary: 'حذف نظام النقاط بواسطة الـ ID',
-      parameters: [
-        { in: 'path', name: 'id', required: true, schema: { type: 'string' } },
-      ],
-      responses: { 204: { description: 'تم الحذف بنجاح' } },
-    },
-  },
-};
+
 
 const swaggerUiOptions = {
   customCssUrl:
