@@ -1,5 +1,6 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { htmlToText } from 'html-to-text';
+
 
 export class Email {
   constructor(user, url) {
@@ -9,38 +10,25 @@ export class Email {
     this.otpConfirmEmail = user.otpConfirmEmail;
   }
 
-  newTransport() {
-    return nodemailer.createTransport({
-      service: 'gmail',
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.MY_EMAIL_USERNAME,
-        pass: process.env.MY_EMAIL_PASSWORD,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
-  }
-
   async send(template, subject) {
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const html = this.generateHtml(template);
 
-    const mailOptions = {
-      from:
-        process.env.MY_EMAIL_USERNAME ||
-        'Rehletna Team <no-reply@rehletna.com>',
-      to: this.to,
-      subject,
-      html,
-      text: htmlToText(html),
-    };
-
     try {
-      const info = await this.newTransport().sendMail(mailOptions);
-      console.log(`Email sent successfully! MessageID:`, info.messageId);
+      const { data, error } = await resend.emails.send({
+        from: 'Rehletna <onboarding@resend.dev>',
+        to: this.to,
+        subject,
+        html,
+        text: htmlToText(html),
+      });
+
+      if (error) {
+        console.error('Error inside Email Service:', error.message);
+        throw new Error(error.message);
+      }
+
+      console.log(`Email sent successfully! MessageID:`, data.id);
     } catch (err) {
       console.error('Error inside Email Service:', err.message);
       throw err;

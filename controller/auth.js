@@ -100,6 +100,7 @@ export const signup = asyncHandler(async (req, res, next) => {
     totalPoints: 200,
     otpConfirmEmail,
     otpConfirmEmailExpires: Date.now() + 10 * 60 * 1000,
+    is_active: false,
   });
 
   await Point.create({
@@ -124,6 +125,7 @@ try {
       email: newUser.email,
       phone: newUser.phone,
       pendingPoints: newUser.pendingPoints,
+      is_active: false,
     },
   });
 });
@@ -131,7 +133,6 @@ try {
 export const verifyEmail = asyncHandler(async (req, res, next) => {
   const { email, otp } = req.body;
 
-  // ضيف .select('+otpConfirmEmail') عشان تجيب الـ field اللي معمول عليه select: false
   const user = await User.findOne({ email }).select(
     '+otpConfirmEmail +otpConfirmEmailExpires'
   );
@@ -140,7 +141,6 @@ export const verifyEmail = asyncHandler(async (req, res, next) => {
     return next(new AppError('User not found', 404));
   }
 
-  // اتأكد إن الـ OTP لسه صالح
   if (user.otpConfirmEmailExpires && Date.now() > user.otpConfirmEmailExpires) {
     return next(new AppError('OTP has expired', 400));
   }
@@ -152,6 +152,7 @@ export const verifyEmail = asyncHandler(async (req, res, next) => {
   user.emailVerified = true;
   user.otpConfirmEmail = null;
   user.otpConfirmEmailExpires = null;
+  user.is_active = true;
 
   await user.save({ validateBeforeSave: false });
 
@@ -166,7 +167,9 @@ export const login = asyncHandler(async (req, res, next) => {
   if (!email || !password)
     return next(new AppError('Please provide email and password', 400));
 
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email: email, is_active: true }).select(
+    '+password'
+  );
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Incorrect email or password', 401));
