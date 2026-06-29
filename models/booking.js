@@ -90,7 +90,7 @@ bookingSchema.pre(/^find/, function () {
     .populate('coupon', 'code discount')
     .populate('gift', 'name image description')
     .populate('product', 'name price image');
-  
+
 });
 
 const Booking =

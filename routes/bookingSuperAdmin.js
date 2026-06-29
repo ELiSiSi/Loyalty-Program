@@ -16,7 +16,7 @@ router.use(restrictTo('superAdmin'));
 
 /**
  * @swagger
- * /api/v1/super-admin/bookings:
+ * /api/v1/super-admin/booking:
  *   get:
  *     summary: Get all bookings
  *     tags: [Super Admin - Bookings]
@@ -25,7 +25,7 @@ router.get('/', getAllBookingsAdmin);
 
 /**
  * @swagger
- * /api/v1/super-admin/bookings/{id}:
+ * /api/v1/super-admin/booking/{id}:
  *   get:
  *     summary: Get single booking
  *     tags: [Super Admin - Bookings]
@@ -34,7 +34,7 @@ router.get('/:id', getBookingAdmin);
 
 /**
  * @swagger
- * /api/v1/super-admin/bookings/{id}/cancel:
+ * /api/v1/super-admin/booking/{id}/cancel:
  *   patch:
  *     summary: Cancel booking
  *     tags: [Super Admin - Bookings]

@@ -15,7 +15,7 @@ import {
 router.use(protect);
 /**
  * @swagger
- * /api/v1/bookings:
+ * /api/v1/booking:
  *   post:
  *     summary: Create a new booking
  *     tags: [Bookings]
@@ -73,10 +73,9 @@ router.use(protect);
  */
 router.post('/', createBooking);
 
-
 /**
  * @swagger
- * /api/v1/bookings/my:
+ * /api/v1/booking/my:
  *   get:
  *     summary: Get all my bookings
  *     tags: [Bookings]
@@ -107,12 +106,11 @@ router.post('/', createBooking);
  *       401:
  *         description: Unauthorized
  */
-
 router.get('/',getMyAllBookings);
 
 /**
  * @swagger
- * /api/v1/bookings/my/{id}:
+ * /api/v1/booking/my/{id}:
  *   get:
  *     summary: Get a single booking by ID
  *     tags: [Bookings]
@@ -147,11 +145,10 @@ router.get('/',getMyAllBookings);
  *       404:
  *         description: Booking not found
  */
-
 router.get('/:id', getMyBooking);
 /**
  * @swagger
- * /api/v1/bookings/{id}/cancel:
+ * /api/v1/booking/{id}/cancel:
  *   patch:
  *     summary: Cancel a booking
  *     tags: [Bookings]
@@ -191,7 +188,7 @@ router.get('/:id', getMyBooking);
 router.patch('/:id/cancel', cancelBooking);
 /**
  * @swagger
- * /api/v1/bookings/my/{id}:
+ * /api/v1/booking/my/{id}:
  *   patch:
  *     summary: Update my booking
  *     tags: [Bookings]

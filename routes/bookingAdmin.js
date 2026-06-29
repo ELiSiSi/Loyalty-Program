@@ -12,11 +12,11 @@ import {
 
 router.use(protect);
 
-router.use(restrictTo('admin', 'superAdmin'));
+router.use(restrictTo('admin'));
 
 /**
  * @swagger
- * /api/v1/admin/bookings:
+ * /api/v1/admin/booking:
  *   get:
  *     summary: Get all company bookings
  *     tags: [Admin Bookings]
@@ -25,7 +25,7 @@ router.get('/', getAllBookingsAdmin);
 
 /**
  * @swagger
- * /api/v1/admin/bookings/{id}:
+ * /api/v1/admin/booking/{id}:
  *   get:
  *     summary: Get single booking
  *     tags: [Admin Bookings]
@@ -34,7 +34,7 @@ router.get('/:id', getBookingAdmin);
 
 /**
  * @swagger
- * /api/v1/admin/bookings/{id}/cancel:
+ * /api/v1/admin/booking/{id}/cancel:
  *   patch:
  *     summary: Cancel booking
  *     tags: [Admin Bookings]

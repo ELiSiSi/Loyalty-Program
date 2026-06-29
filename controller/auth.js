@@ -7,6 +7,7 @@ import { Email } from '../utils/email.js';
 import User from '../models/user.js';
 import AppError from '../utils/appError.js';
 import Point from '../models/point.js';
+import { ref } from 'process';
 
 export const signAccessToken = (payload) =>
   JWT.sign(payload, process.env.JWT_ACCESS_SECRET, {
@@ -110,7 +111,7 @@ export const signup = asyncHandler(async (req, res, next) => {
 try {
   await new Email(newUser, '').sendWelcome();
 } catch (err) {
-  console.error('⚠️ Email Error FULL:', err); 
+  console.error('⚠️ Email Error FULL:', err);
 }
 
   const { accessToken } = await issueTokens(newUser, res);
@@ -182,8 +183,11 @@ export const login = asyncHandler(async (req, res, next) => {
     status: 'success',
     accessToken,
     data: {
-      user,
-    },
+refreshToken: user.refreshToken,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      },
   });
 });
 
