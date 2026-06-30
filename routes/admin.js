@@ -3,7 +3,7 @@ const router = express.Router();
 
 import { protect, restrictTo } from '../middleware/auth.js';
 
-import { completeAdminSetup } from '../controller/admin.js';
+import { completeAdminSetup, getAdminReport } from '../controller/admin.js';
 
 
 
@@ -70,6 +70,7 @@ import { completeAdminSetup } from '../controller/admin.js';
  *                   type: string
  *                   example: "Token invalid or expired"
  */
+router.get('/report', protect, restrictTo('admin', 'superAdmin'), getAdminReport);
 router.patch('/setup-account/:token', completeAdminSetup);
 
 export default router;

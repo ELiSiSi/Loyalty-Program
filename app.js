@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import hpp from 'hpp';
+import xss from 'xss-clean';
 import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
@@ -104,7 +105,7 @@ const globalLimiter = rateLimit({
     message_en: 'Too many requests from this IP, please try again later.',
   },
 });
-
+app.use(    xss())
 // ═══════════════════════════════════════════════════════════════════════
 //---------------------------   ROUTES    --------------------------------
 // ═══════════════════════════════════════════════════════════════════════
