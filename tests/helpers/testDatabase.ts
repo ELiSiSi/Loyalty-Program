@@ -13,14 +13,17 @@ export let isDbConnected = false;
 
 export const connectTestDb = async () => {
   try {
-    if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(env.MONGO_URI, {
-        serverSelectionTimeoutMS: 2500,
-      });
+    if (mongoose.connection.readyState === 1) {
       isDbConnected = true;
-    } else {
-      isDbConnected = true;
+      return;
     }
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.connection.close();
+    }
+    await mongoose.connect(env.MONGO_URI, {
+      serverSelectionTimeoutMS: 5000,
+    });
+    isDbConnected = true;
   } catch (err) {
     console.warn('⚠️ [Test DB] MongoDB connection skipped or offline. Integration tests running in simulated mode.');
     isDbConnected = false;
@@ -28,7 +31,7 @@ export const connectTestDb = async () => {
 };
 
 export const clearTestDb = async () => {
-  if (!isDbConnected || mongoose.connection.readyState === 0) return;
+  if (!isDbConnected || mongoose.connection.readyState !== 1) return;
 
   const collections = [
     TenantModel,
