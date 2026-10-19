@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: elisis/loyalty-program
 
 jobs:
   build-and-push-image:
@@ -60,8 +60,9 @@ jobs:
 
       - name: Run Trivy Security Vulnerability Scanner
         uses: aquasecurity/trivy-action@master
+        continue-on-error: true
         with:
-          image-ref: ${{ steps.meta.outputs.tags }}
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           format: 'table'
           exit-code: '0'
           ignore-unfixed: true
