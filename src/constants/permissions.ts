@@ -1,0 +1,105 @@
+export const PERMISSIONS = {
+  // Tenant
+  TENANT_CREATE: 'tenant:create',
+  TENANT_READ: 'tenant:read',
+  TENANT_UPDATE: 'tenant:update',
+  TENANT_DELETE: 'tenant:delete',
+
+  // Points & Ledger
+  POINTS_EARN: 'points:earn',
+  POINTS_REDEEM: 'points:redeem',
+  POINTS_ADJUST: 'points:adjust',
+  POINTS_VIEW: 'points:view',
+
+  // Members / Users
+  MEMBER_READ: 'member:read',
+  MEMBER_MANAGE: 'member:manage',
+
+  // Campaigns & Promotions
+  CAMPAIGN_CREATE: 'campaign:create',
+  CAMPAIGN_READ: 'campaign:read',
+  CAMPAIGN_UPDATE: 'campaign:update',
+  CAMPAIGN_DELETE: 'campaign:delete',
+
+  // Coupons
+  COUPON_CREATE: 'coupon:create',
+  COUPON_READ: 'coupon:read',
+  COUPON_REDEEM: 'coupon:redeem',
+  COUPON_DELETE: 'coupon:delete',
+
+  // Rewards / Gifts
+  REWARD_CREATE: 'reward:create',
+  REWARD_READ: 'reward:read',
+  REWARD_REDEEM: 'reward:redeem',
+  REWARD_DELETE: 'reward:delete',
+
+  // Bookings / Reservations
+  BOOKING_CREATE: 'booking:create',
+  BOOKING_READ: 'booking:read',
+  BOOKING_UPDATE: 'booking:update',
+  BOOKING_CANCEL: 'booking:cancel',
+
+  // Analytics & Audits
+  ANALYTICS_VIEW: 'analytics:view',
+  AUDIT_VIEW: 'audit:view',
+
+  // Webhooks
+  WEBHOOK_MANAGE: 'webhook:manage',
+} as const;
+
+export type PermissionType = typeof PERMISSIONS[keyof typeof PERMISSIONS];
+
+export const ROLE_DEFAULT_PERMISSIONS: Record<string, string[]> = {
+  superAdmin: Object.values(PERMISSIONS),
+  admin: [
+    PERMISSIONS.TENANT_READ,
+    PERMISSIONS.TENANT_UPDATE,
+    PERMISSIONS.POINTS_EARN,
+    PERMISSIONS.POINTS_REDEEM,
+    PERMISSIONS.POINTS_ADJUST,
+    PERMISSIONS.POINTS_VIEW,
+    PERMISSIONS.MEMBER_READ,
+    PERMISSIONS.MEMBER_MANAGE,
+    PERMISSIONS.CAMPAIGN_CREATE,
+    PERMISSIONS.CAMPAIGN_READ,
+    PERMISSIONS.CAMPAIGN_UPDATE,
+    PERMISSIONS.CAMPAIGN_DELETE,
+    PERMISSIONS.COUPON_CREATE,
+    PERMISSIONS.COUPON_READ,
+    PERMISSIONS.COUPON_REDEEM,
+    PERMISSIONS.COUPON_DELETE,
+    PERMISSIONS.REWARD_CREATE,
+    PERMISSIONS.REWARD_READ,
+    PERMISSIONS.REWARD_REDEEM,
+    PERMISSIONS.REWARD_DELETE,
+    PERMISSIONS.BOOKING_CREATE,
+    PERMISSIONS.BOOKING_READ,
+    PERMISSIONS.BOOKING_UPDATE,
+    PERMISSIONS.BOOKING_CANCEL,
+    PERMISSIONS.ANALYTICS_VIEW,
+    PERMISSIONS.AUDIT_VIEW,
+    PERMISSIONS.WEBHOOK_MANAGE,
+  ],
+  staff: [
+    PERMISSIONS.POINTS_EARN,
+    PERMISSIONS.POINTS_REDEEM,
+    PERMISSIONS.POINTS_VIEW,
+    PERMISSIONS.MEMBER_READ,
+    PERMISSIONS.COUPON_READ,
+    PERMISSIONS.COUPON_REDEEM,
+    PERMISSIONS.REWARD_READ,
+    PERMISSIONS.REWARD_REDEEM,
+    PERMISSIONS.BOOKING_READ,
+    PERMISSIONS.BOOKING_UPDATE,
+  ],
+  user: [
+    PERMISSIONS.POINTS_VIEW,
+    PERMISSIONS.POINTS_REDEEM,
+    PERMISSIONS.CAMPAIGN_READ,
+    PERMISSIONS.COUPON_READ,
+    PERMISSIONS.REWARD_READ,
+    PERMISSIONS.BOOKING_CREATE,
+    PERMISSIONS.BOOKING_READ,
+    PERMISSIONS.BOOKING_CANCEL,
+  ],
+};

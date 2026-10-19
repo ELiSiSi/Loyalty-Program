@@ -1,0 +1,271 @@
+{
+  "info": {
+    "name": "Loyalty Program — Multi-Tenant SaaS Platform API",
+    "description": "Comprehensive Postman Collection for Enterprise Loyalty & Rewards SaaS Engine.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "tenantId", "value": "", "type": "string" },
+    { "key": "tenantSlug", "value": "noon", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "System & Health",
+      "item": [
+        {
+          "name": "Liveness Probe",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
+          }
+        },
+        {
+          "name": "Deep Diagnostics Probe",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health/detailed"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Customer / Member",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Majid Al-Futtaim\",\n  \"email\": \"majid@example.com\",\n  \"password\": \"SecretPassword123!\",\n  \"tenantSlug\": \"noon\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.tokens) {",
+                  "  pm.collectionVariables.set('token', jsonData.data.tokens.accessToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@noon.com\",\n  \"password\": \"NoonAdmin123!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/auth/refresh"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tenants & SaaS Companies",
+      "item": [
+        {
+          "name": "Get Current Tenant Profile",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/tenants/current",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "x-tenant-slug", "value": "{{tenantSlug}}" }
+            ]
+          }
+        },
+        {
+          "name": "List All Tenants (Super Admin)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/tenants",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users & Digital Cards",
+      "item": [
+        {
+          "name": "Get My Profile & Balance",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/users/me",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          }
+        },
+        {
+          "name": "Get Digital Member Card (Live QR)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/users/me/card",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "x-tenant-slug", "value": "{{tenantSlug}}" }
+            ]
+          }
+        },
+        {
+          "name": "List Tenant Members",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/users",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "x-tenant-slug", "value": "{{tenantSlug}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Points Ledger & Smart Engine",
+      "item": [
+        {
+          "name": "Credit Points (Cashier / POS)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/points/earn",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "x-tenant-slug", "value": "{{tenantSlug}}" },
+              { "key": "x-idempotency-key", "value": "POS-TXN-100234" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"USER_ID_HERE\",\n  \"amount\": 150,\n  \"referenceType\": \"ORDER\",\n  \"referenceId\": \"ORD-5544\",\n  \"description\": \"In-store purchase at Dubai Mall branch\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Redeem Points (Checkout / POS)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/points/redeem",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "x-tenant-slug", "value": "{{tenantSlug}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 50,\n  \"description\": \"Redeemed 50 points for 5 AED discount\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Calculate Order Points Preview",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/points/calculate",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "x-tenant-slug", "value": "{{tenantSlug}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderAmount\": 500\n}"
+            }
+          }
+        },
+        {
+          "name": "Get My Points Transaction Ledger",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/points/my-history",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "x-tenant-slug", "value": "{{tenantSlug}}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rewards & Digital Vouchers",
+      "item": [
+        {
+          "name": "Browse Rewards Catalog",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/rewards",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "x-tenant-slug", "value": "{{tenantSlug}}" }
+            ]
+          }
+        },
+        {
+          "name": "Redeem Reward for Points (Generates QR Voucher)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/rewards/redeem",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "x-tenant-slug", "value": "{{tenantSlug}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rewardId\": \"REWARD_ID_HERE\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Staff Claims Customer Voucher",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/rewards/claim",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "x-tenant-slug", "value": "{{tenantSlug}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"voucherCode\": \"REW-XXXX-XXXX\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics & Metrics",
+      "item": [
+        {
+          "name": "Get Tenant SaaS Dashboard Metrics",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/analytics/dashboard",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "x-tenant-slug", "value": "{{tenantSlug}}" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

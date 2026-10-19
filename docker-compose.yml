@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # ═════════════════════════════════════════════════════════════════════
+  # SaaS Fastify Core API
+  # ═════════════════════════════════════════════════════════════════════
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: loyalty_api
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      MONGO_URI: mongodb://mongodb:27017/loyalty_saas?replicaSet=rs0
+      JWT_ACCESS_SECRET: production_super_secret_access_jwt_key_2026_enterprise
+      JWT_REFRESH_SECRET: production_super_secret_refresh_jwt_key_2026_enterprise
+      JWT_ACCESS_EXPIRES_IN: 15m
+      JWT_REFRESH_EXPIRES_IN: 7d
+      JWT_COOKIE_EXPIRES_IN: 90
+      RATE_LIMIT_MAX: 200
+      RATE_LIMIT_TIMEWINDOW: 60000
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - loyalty_net
+
+  # ═════════════════════════════════════════════════════════════════════
+  # MongoDB Database with Replica Set
+  # ═════════════════════════════════════════════════════════════════════
+  mongodb:
+    image: mongo:7.0
+    container_name: loyalty_mongodb
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    command: ['--replSet', 'rs0', '--bind_ip_all']
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - loyalty_net
+    healthcheck:
+      test: |
+        mongosh --eval "try { rs.status().ok } catch(e) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongodb:27017'}]}).ok }" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ═════════════════════════════════════════════════════════════════════
+  # Redis Cache & Distributed Rate Limiting
+  # ═════════════════════════════════════════════════════════════════════
+  redis:
+    image: redis:7-alpine
+    container_name: loyalty_redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - loyalty_net
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ═════════════════════════════════════════════════════════════════════
+  # Mongo Express - GUI Admin Interface
+  # ═════════════════════════════════════════════════════════════════════
+  mongo-express:
+    image: mongo-express:latest
+    container_name: loyalty_mongo_express
+    restart: unless-stopped
+    ports:
+      - '8081:8081'
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: loyaltyPassword2026
+    depends_on:
+      - mongodb
+    networks:
+      - loyalty_net
+
+volumes:
+  mongo_data:
+  redis_data:
+
+networks:
+  loyalty_net:
+    driver: bridge
